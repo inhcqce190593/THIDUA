@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tài Khoản - Hệ Thống Quản Lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #1e40af; /* Modern blue */
+            --secondary: #3b82f6; /* Vibrant blue */
+            --accent: #f59e0b; /* Warm amber */
+            --danger: #dc2626; /* Red for danger actions */
+            --success: #16a34a; /* Green for success */
+            --background: #f1f5f9; /* Softer slate background */
+            --card-bg: #ffffff;
+            --text: #0f172a; /* Darker slate text */
+            --border: #d1d5db; /* Lighter border */
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -260px;
+            background-color: var(--primary);
+            color: white;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar .logo i {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+        }
+
+        .sidebar .nav-links {
+            padding: 0.75rem;
+        }
+
+        .sidebar .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .sidebar .nav-links a i {
+            margin-right: 0.75rem;
+            width: 1.25rem;
+            text-align: center;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 0.75rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 0.5rem;
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info span {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background-color: var(--danger);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background-color: #b91c1c;
+        }
+
+        .clock {
+            font-size: 0.9rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-warning {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-block {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Flash Messages */
+        .flashes {
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            animation: slideIn 0.5s ease;
+            gap: 0.75rem;
+        }
+
+        .alert-success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .search-bar button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            gap: 0.5rem;
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .search-bar button:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            box-shadow: var(--shadow);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (max-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #111827;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (min-width: 1024px) {
+            .navbar .menu-toggle {
+                display: none;
+            }
+            .sidebar {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 260px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.75rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            th, td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="flex items-center">
+            <i class="fas fa-bars menu-toggle" id="menuToggle"></i>
+            <div class="navbar-brand ml-3">
+                <i class="fas fa-school"></i>
+                <span>ADMIN</span>
+            </div>
+        </div>
+        <div class="user-info flex items-center gap-4">
+            {% if 'username' in session %}
+                <span><i class="fas fa-user"></i> {{ session['username'] }}</span>
+                <div class="clock" id="clock">11:27 PM +07, Thứ Bảy, 09/08/2025</div>
+                <a href="{{ url_for('logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="logout-btn">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-school"></i>
+            <span>Hệ Thống Quản Lý</span>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}" class="{{ 'active' if request.path == url_for('home') }}">
+                <i class="fas fa-home"></i> Trang Chủ
+            </a>
+            {% if session.get('role') == 'admin' %}
+            <a href="{{ url_for('index') }}" class="{{ 'active' if request.path == url_for('index') }}">
+                <i class="fas fa-users-cog"></i> Quản Lý Tài Khoản
+            </a>
+            <a href="{{ url_for('tong_ket') }}" class="{{ 'active' if request.path == url_for('tong_ket') }}">
+                <i class="fas fa-chart-bar"></i> Trang Tổng Kết
+            </a>
+            <a href="{{ url_for('tong_ket_tat_ca') }}" class="{{ 'active' if request.path == url_for('tong_ket_tat_ca') }}">
+                <i class="fas fa-chart-line"></i> Tổng Kết Tất Cả
+            </a>
+            {% endif %}
+            {% if session.get('role') in ['user', 'viewer'] %}
+            <a href="{{ url_for('user') }}" class="{{ 'active' if request.path == url_for('user') }}">
+                <i class="fas fa-user"></i> Trang của tôi
+            </a>
+            {% endif %}
+            <a href="#" id="profileBtnSidebar">
+                <i class="fas fa-user-circle"></i> Profile
+            </a>
+            <a href="{{ url_for('hoc_tap') }}" class="{{ 'active' if request.path == url_for('hoc_tap') }}">
+                <i class="fas fa-book-open"></i> Học Tập
+            </a>
+            <a href="{{ url_for('noi_quy') }}" class="{{ 'active' if request.path == url_for('noi_quy') }}">
+                <i class="fas fa-gavel"></i> Nội Quy
+            </a>
+            <a href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1 class="page-title">Quản Lý Tài Khoản Người Dùng</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Form Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <i class="fas fa-{{ 'edit' if account_to_edit else 'plus' }}"></i>
+                            {{ 'Chỉnh Sửa Tài Khoản' if account_to_edit else 'Thêm Tài Khoản Mới' }}
+                        </h2>
+                    </div>
+                    <div class="card mt-4">
+    <div class="card-header"><h2>📂 Thêm Tài Khoản Từ File Excel</h2></div>
+    <form action="{{ url_for('add_accounts_from_excel') }}" 
+          method="POST" enctype="multipart/form-data" 
+          onsubmit="return confirm('Bạn có chắc muốn thêm tài khoản từ file Excel này không?');">
+        <div class="form-group">
+            <label for="file_excel">Chọn file Excel (.xlsx):</label>
+            <input type="file" name="file" id="file_excel" class="form-control" accept=".xlsx" required>
+        </div>
+        <button type="submit" class="btn btn-success btn-block mt-2">
+            <i class="fas fa-upload"></i> Thêm từ Excel
+        </button>
+    </form>
+</div>
+
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">
+                                    <i class="fas fa-{{ 'check-circle' if category == 'success' else 'times-circle' if category == 'error' else 'info-circle' }}"></i>
+                                    {{ message | safe }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form action="{% if account_to_edit %}{{ url_for('edit_account', account_id=account_to_edit.id) }}{% else %}{{ url_for('add_account') }}{% endif %}" method="post">
+                        {% if account_to_edit %}
+                            <input type="hidden" name="id" value="{{ account_to_edit.id }}">
+                        {% else %}
+                            <input type="hidden" name="current_tuan_for_add" value="{{ selected_tuan if selected_tuan else 1 }}">
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="name">Tên:</label>
+                            <input type="text" id="name" name="name" class="form-control" 
+                                   value="{{ account_to_edit.Name if account_to_edit else '' }}" required>
+                        </div>
+                        
+
+                        <div class="form-group">
+                            <label for="username">Tên Người Dùng:</label>
+                            <input type="text" id="username" name="username" class="form-control" 
+                                   value="{{ account_to_edit.username if account_to_edit else '' }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lop">Lớp:</label>
+                            <input type="text" id="lop" name="lop" class="form-control" 
+                                   value="{{ account_to_edit.lop if account_to_edit else '' }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Capquanli">Cấp Quản Lý:</label>
+                            <select id="Capquanli" name="Capquanli" class="form-control" required>
+                                <option value="">-- Chọn cấp quản lý --</option>
+                                <option value="user" {% if account_to_edit and account_to_edit.Capquanli == 'user' %}selected{% endif %}>User</option>
+                                <option value="admin" {% if account_to_edit and account_to_edit.Capquanli == 'admin' %}selected{% endif %}>Admin</option>
+                            </select>
+                        </div>
+                        
+
+                        {% if account_to_edit %}
+                        <div class="form-group">
+                            <label for="lop_truc">Lớp Trực:</label>
+                            <input type="text" id="lop_truc" name="lop_truc" class="form-control" 
+                                   value="{{ account_to_edit.lop_truc if account_to_edit else '' }}">
+                        </div>
+                        {% endif %}
+
+                        {% if account_to_edit %}
+                        <div class="form-group">
+                            <label for="tuan_edit">Tuần:</label>
+                            <select id="tuan_edit" name="tuan_edit" class="form-control" required>
+                                {% for i in range(1, 41) %}
+                                    <option value="{{ i }}" {% if account_to_edit and account_to_edit.tuan == i %}selected{% endif %}>Tuần {{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-{{ 'save' if account_to_edit else 'plus' }}"></i>
+                            {{ 'Cập Nhật Tài Khoản' if account_to_edit else 'Thêm Tài Khoản' }}
+                        </button>
+
+                        {% if account_to_edit %}
+                            <a href="{{ url_for('index', tuan=selected_tuan if selected_tuan else '') }}" class="btn btn-warning btn-block mt-3">
+                                <i class="fas fa-times"></i> Hủy bỏ chỉnh sửa
+                            </a>
+                        {% endif %}
+                    </form>
+                </div>
+
+                <!-- Action Section -->
+                <div class="space-y-6">
+                    <!-- Set All Tuan -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-calendar-alt"></i> Cài Đặt Tuần Mới Cho Tất Cả</h2>
+                        </div>
+                        <form action="{{ url_for('set_all_tuan') }}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật cột TUẦN của TẤT CẢ các tài khoản thành tuần đã chọn không? Hành động này không thể hoàn tác!');">
+                            <div class="form-group">
+                                <label for="new_tuan_value">Chọn Tuần:</label>
+                                <select id="new_tuan_value" name="new_tuan_value" class="form-control">
+                                    {% for i in range(1, 41) %}
+                                        <option value="{{ i }}" {% if selected_tuan == i %}selected{% endif %}>Tuần {{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-danger btn-block">
+                                <i class="fas fa-sync-alt"></i> Cập Nhật Tuần cho Tất Cả
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Update Lop Truc -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-tasks"></i> Cập Nhật Lớp Trực Tự Động</h2>
+                        </div>
+                        <form action="{{ url_for('update_lop_truc_route') }}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật toàn bộ cột LỚP TRỰC dựa trên bảng PHÂN CÔNG TRỰC không? Hành động này sẽ ghi đè dữ liệu hiện tại!');">
+                            <button type="submit" class="btn btn-danger btn-block">
+                                <i class="fas fa-sync-alt"></i> Cập Nhật Lớp Trực
+                            </button>
+                        </form>
+                    </div>
+
+
+                    <!-- Filter Section -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-filter"></i> Lọc & Hiển Thị Danh Sách</h2>
+                        </div>
+                        <form action="{{ url_for('index') }}" method="get">
+                            <div class="form-group">
+                                <label for="tuan_filter">Hiển thị Tuần:</label>
+                                <select id="tuan_filter" name="tuan" class="form-control">
+                                    <option value="">Tất cả các tuần</option>
+                                    {% for i in range(1, 41) %}
+                                        <option value="{{ i }}" {% if selected_tuan == i %}selected{% endif %}>Tuần {{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="flex gap-3">
+                                <button type="submit" class="btn btn-success flex-1">
+                                    <i class="fas fa-filter"></i> Lọc Bảng
+                                </button>
+                                {% if selected_tuan %}
+                                    <a href="{{ url_for('index') }}" class="btn btn-warning flex-1">
+                                        <i class="fas fa-times"></i> Hiện Tất Cả
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Danh sách tài khoản</h2>
+    <div>
+        <!-- Nút Xuất Excel -->
+        <a href="{{ url_for('export_accounts', tuan=selected_tuan) }}" 
+           class="btn btn-success">
+            <i class="fas fa-file-excel"></i> Xuất danh sách User
+        </a>
+    </div>
+</div>
+
+<a href="{{ url_for('download_account_template') }}" class="btn btn-info">
+    <i class="fas fa-file-download"></i> Tải file Excel mẫu
+</a>
+
+            <!-- Data Table -->
+            <div class="card mt-6">
+                <div class="card-header">
+                    <h2><i class="fas fa-list"></i> Danh Sách Tài Khoản</h2>
+                </div>
+                <div class="mb-4">
+  <form action="{{ url_for('delete_selected_accounts') }}" method="POST"
+      onsubmit="return confirm('Xóa các tài khoản đã tick?');">
+
+  <div class="mb-3">
+    <button type="submit" class="btn btn-danger">
+      <i class="fas fa-trash"></i> Xóa các tài khoản đã chọn
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên hoặc username..." class="form-control">
+      <button type="button" onclick="searchTable()">Tìm</button>
+    </div>
+
+    <table id="accountTable" class="table">
+      <thead>
+        <tr>
+          <th style="width:36px;">
+            <input type="checkbox" id="checkAll">
+          </th>
+          <th>ID</th>
+          <th>Tên</th>
+          <th>Tên Người Dùng</th>
+          <th>Mật Khẩu</th>
+          <th>Vai Trò</th>
+          <th>Lớp</th>
+          <th>Tuần</th>
+          <th>Cấp Quản Lý</th>
+          <th>Lớp Trực</th>
+          <th>Trạng Thái</th>
+          <th>Thao Tác</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for account in accounts %}
+        <tr>
+          <td>
+            <input type="checkbox" name="selected_ids" value="{{ account.id }}">
+          </td>
+
+          <td>{{ account.id }}</td>
+          <td>{{ account.Name }}</td>
+          <td>{{ account.username }}</td>
+          <td>{{ account.password }}</td>
+          <td>{{ account.role }}</td>
+          <td>{{ account.lop }}</td>
+          <td>{{ account.tuan }}</td>
+          <td>{{ account.Capquanli }}</td>
+          <td>{{ account.lop_truc }}</td>
+
+          <!-- Status Toggle -->
+          <td>
+            <form method="POST" action="{{ url_for('toggle_status', account_id=account.id) }}">
+              <button type="submit" class="btn btn-{{ 'success' if account.trangthai == 'Đã tổng kết' else 'danger' }}" style="padding: 0.5rem;">
+                {{ 'Đã tổng kết' if account.trangthai == 'Đã tổng kết' else 'Chưa tổng kết' }}
+              </button>
+            </form>
+          </td>
+
+          <!-- Action Buttons -->
+          <td>
+            <div class="action-buttons">
+              <a href="{{ url_for('edit_account', account_id=account.id, tuan=selected_tuan if selected_tuan else '') }}"
+                 class="btn btn-warning" style="padding: 0.5rem;">
+                <i class="fas fa-edit"></i> Sửa
+              </a>
+              <a href="{{ url_for('delete_account', account_id=account.id, tuan=selected_tuan if selected_tuan else '') }}"
+                 onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');"
+                 class="btn btn-danger" style="padding: 0.5rem;">
+                <i class="fas fa-trash"></i> Xóa
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+
+<script>
+  // Chọn/Bỏ chọn tất cả
+  document.getElementById('checkAll').addEventListener('change', function(e) {
+    const checked = e.target.checked;
+    document.querySelectorAll('input[name="selected_ids"]').forEach(cb => cb.checked = checked);
+  });
+</script>
+
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-grid">
+                    <div>
+                        <h3>Hệ Thống Quản Lý Thi Đua</h3>
+                        <p>Hỗ trợ quản lý học sinh và báo cáo thi đua một cách hiệu quả, minh bạch và chuyên nghiệp tại Trường THPT Cái Nước.</p>
+                    </div>
+                    <div>
+                        <h3>Liên Kết Nhanh</h3>
+                        <ul class="footer-links">
+                            <li><a href="{{ url_for('home') }}"><i class="fas fa-chevron-right"></i> Trang Chủ</a></li>
+                            <li><a href="{{ url_for('index') }}"><i class="fas fa-chevron-right"></i> Quản Lý Tài Khoản</a></li>
+                            <li><a href="{{ url_for('tong_ket') }}"><i class="fas fa-chevron-right"></i> Trang Tổng Kết</a></li>
+                            <li><a href="{{ url_for('noi_quy') }}"><i class="fas fa-chevron-right"></i> Quản Lý Nội Quy</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Thông Tin Liên Hệ</h3>
+                                       <ul class="footer-links">
+                            <li><a href="mailto:support@quanlylop.edu.vn"><i class="fas fa-envelope"></i> support@quanlylop.edu.vn</a></li>
+                            <li><a href="tel:0123456789"><i class="fas fa-phone"></i> 032 678 1606</a></li>
+                            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Đường Hồ Thị Kỷ, Khóm 1, TT Cái Nước, huyện Cái Nước, Tỉnh Cà Mau</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2025 Hệ Thống Quản Lý Thi Đua - Trường THPT Cái Nước. Bản quyền thuộc về THPT Cái Nước.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Real-time clock
+        function updateClock() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Ho_Chi_Minh' };
+            const time = now.toLocaleTimeString('vi-VN', options).toUpperCase();
+            const day = now.toLocaleDateString('vi-VN', { weekday: 'long' });
+            const date = now.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            document.getElementById('clock').textContent = `${time} +07, ${day}, ${date}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Search functionality
+        function searchTable() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.getElementById('accountTable');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let found = false;
+                const td = tr[i].getElementsByTagName('td');
+                for (let j = 1; j < td.length - 1; j++) { // Skip ID and action columns
+                    if (td[j] && td[j].textContent.toLowerCase().includes(input)) {
+                        found = true;
+                        break;
+                    }
+                }
+                tr[i].style.display = found ? '' : 'none';
+            }
+        }
+
+        document.getElementById('checkAll').addEventListener('change', function(e) {
+    const checked = e.target.checked;
+    document.querySelectorAll('input[name="selected_ids"]').forEach(cb => cb.checked = checked);
+  });
+    </script>
+</body>
+</html>

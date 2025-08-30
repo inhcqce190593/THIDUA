@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang chủ</title>
+</head>
+<body>
+    <h2>Chào mừng lớp {{ lop }}</h2>
+    <h3>Phân công trực:</h3>
+    {% if phan_cong %}
+        <table border="1">
+            <tr>
+                <th>Khối</th>
+                <th>Tuần</th>
+                <th>Lớp Trực</th>
+                <th>Lớp Được Trực</th>
+            </tr>
+            {% for pc in phan_cong %}
+            <tr>
+                <td>{{ pc.khoi }}</td>
+                <td>{{ pc.tuan }}</td>
+                <td>{{ pc.lop_truc }}</td>
+                <td>{{ pc.lop_duoc_truc }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Không có phân công trực nào.</p>
+    {% endif %}
+    <br>
+    <a href="{{ url_for('logout') }}">Đăng xuất</a>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang chủ</title>
+</head>
+<body>
+    <h2>Chào mừng lớp {{ lop }}</h2>
+    <h3>Phân công trực:</h3>
+    {% if phan_cong %}
+        <table border="1">
+            <tr>
+                <th>Khối</th>
+                <th>Tuần</th>
+                <th>Lớp Trực</th>
+                <th>Lớp Được Trực</th>
+            </tr>
+            {% for pc in phan_cong %}
+            <tr>
+                <td>{{ pc.khoi }}</td>
+                <td>{{ pc.tuan }}</td>
+                <td>{{ pc.lop_truc }}</td>
+                <td>{{ pc.lop_duoc_truc }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Không có phân công trực nào.</p>
+    {% endif %}
+    <br>
+    <a href="{{ url_for('logout') }}">Đăng xuất</a>
+</body>
+</html>

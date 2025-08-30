@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tổng Kết Tuần</title>
+  <style>
+    body { font-family: Arial; background: #f7f7f7; padding: 20px; }
+    h2 { color: #2c3e50; }
+    .section { background: white; padding: 15px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    button { padding: 10px 20px; font-size: 16px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:disabled { background-color: #aaa; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <h2>Tổng Kết Tuần <span id="tuan"></span> - Lớp <span id="lop"></span></h2>
+
+  <div class="section" id="noiquy-section">
+    <h3>Nội dung vi phạm</h3>
+    <div id="noiquy-data"></div>
+  </div>
+
+  <div class="section" id="hoctap-section">
+    <h3>Thông tin học tập</h3>
+    <div id="hoctap-data"></div>
+  </div>
+
+  <button id="btnTongKet">Xác nhận tổng kết</button>
+
+  <script>
+    const tuan = localStorage.getItem("tuan");
+    const lop = localStorage.getItem("lop");
+    document.getElementById("tuan").innerText = tuan;
+    document.getElementById("lop").innerText = lop;
+
+    // Load dữ liệu từ nội quy
+    fetch('https://sheetdb.io/api/v1/YOUR_NOIQUY_API')
+      .then(res => res.json())
+      .then(data => {
+        const filtered = data.filter(row => row['Tuần'] === tuan && row['Lớp'] === lop);
+        document.getElementById("noiquy-data").innerHTML = filtered.map(row => `
+          <p><strong>${row['Nội dung vi phạm']}</strong> - Điểm trừ: ${row['Điểm trừ']}, Số lượt: ${row['Số lượt vi phạm']}</p>
+        `).join('');
+      });
+
+    // Load dữ liệu từ học tập
+    fetch('https://sheetdb.io/api/v1/YOUR_HOCTAP_API')
+      .then(res => res.json())
+      .then(data => {
+        const filtered = data.filter(row => row['Tuần'] === tuan && row['Lớp'] === lop);
+        document.getElementById("hoctap-data").innerHTML = filtered.map(row => `
+          <p>Giờ A: ${row['Số giờ A']} (Tổng: ${row['Tổng giờ A']}), Giờ B: ${row['Số giờ B']} (Tổng: ${row['Tổng giờ B']})</p>
+          <p>Giờ C: ${row['Số giờ C']} (Tổng: ${row['Tổng giờ C']}), Giờ D: ${row['Số giờ D']} (Tổng: ${row['Tổng giờ D']})</p>
+          <p>Kiểu mẫu: ${row['Đạt kiểu mẫu']} (Tổng điểm kiểu mẫu: ${row['Tổng điểm kiểu mẫu']})</p>
+        `).join('');
+      });
+
+    // Kiểm tra tổng kết đã xác nhận chưa
+    const key = `tongket_${tuan}_${lop}`;
+    const daTongKet = localStorage.getItem(key) === "true";
+
+    if (daTongKet) {
+      document.getElementById("btnTongKet").disabled = true;
+      document.getElementById("btnTongKet").innerText = "Đã tổng kết";
+    }
+
+    document.getElementById("btnTongKet").addEventListener("click", () => {
+      const isAdmin = localStorage.getItem("role") === "admin";
+      if (!isAdmin) {
+        localStorage.setItem(key, "true");
+        document.getElementById("btnTongKet").disabled = true;
+        document.getElementById("btnTongKet").innerText = "Đã tổng kết";
+        alert("Đã tổng kết. Không thể nhập thêm nội dung.");
+      }
+    });
+  </script>
+
+</body>
+</html>

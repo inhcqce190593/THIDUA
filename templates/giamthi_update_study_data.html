@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh Sửa Dữ Liệu Học Tập (Giám Thị) - HỆ THỐNG QUẢN LÝ THI ĐUA</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold">HỆ THỐNG QUẢN LÝ THI ĐUA</h1>
+        </div>
+    </header>
+
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between">
+            <div class="flex space-x-4">
+                <a href="{{ url_for('home') }}" class="hover:underline">Trang Chủ</a>
+                <a href="{{ url_for('giamthi') }}" class="hover:underline">Trang Giám Thị</a>
+                <a href="{{ url_for('tong_ket') }}" class="hover:underline">Trang Tổng Kết</a>
+                <a href="{{ url_for('tong_ket_tat_ca') }}" class="hover:underline">Tổng Kết Tất Cả</a>
+                <a href="{{ url_for('profile') }}" class="hover:underline">Profile</a>
+                <a href="{{ url_for('logout') }}" class="hover:underline">Đăng Xuất</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6">
+        <section class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Chỉnh Sửa Dữ Liệu Học Tập (Giám Thị)</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="bg-{{ 'green-100' if category == 'success' else 'red-100' if category == 'error' else 'yellow-100' }} border-l-4 border-{{ 'green-500' if category == 'success' else 'red-500' if category == 'error' else 'yellow-500' }} p-4 mb-4">
+                            {{ message | safe }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('giamthi_update_study_data', id=data.id) }}">
+                <div class="mb-4">
+                    <label for="tuan" class="font-semibold">Tuần:</label>
+                    <select name="tuan" id="tuan" class="border rounded p-2 w-full" required>
+                        <option value="" disabled>-- Chọn tuần --</option>
+                        {% for i in range(1, 41) %}
+                            <option value="{{ i }}" {% if i == data.tuan|int %}selected{% endif %}>Tuần {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="lop_truc" class="font-semibold">Lớp Trực:</label>
+                    <select name="lop_truc" id="lop_truc" class="border rounded p-2 w-full" required>
+                        <option value="" disabled>-- Chọn lớp trực --</option>
+                        {% for lop in available_lop_truc %}
+                            <option value="{{ lop }}" {% if lop == data.lop_truc %}selected{% endif %}>{{ lop }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="gio_a" class="font-semibold">Giờ A:</label>
+                    <input type="number" name="gio_a" id="gio_a" class="border rounded p-2 w-full" value="{{ data.gio_a }}" min="0" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="gio_b" class="font-semibold">Giờ B:</label>
+                    <input type="number" name="gio_b" id="gio_b" class="border rounded p-2 w-full" value="{{ data.gio_b }}" min="0" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="gio_c" class="font-semibold">Giờ C:</label>
+                    <input type="number" name="gio_c" id="gio_c" class="border rounded p-2 w-full" value="{{ data.gio_c }}" min="0" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="gio_d" class="font-semibold">Giờ D:</label>
+                    <input type="number" name="gio_d" id="gio_d" class="border rounded p-2 w-full" value="{{ data.gio_d }}" min="0" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="dat_kieu_mau" class="font-semibold">Đạt kiểu mẫu:</label>
+                    <select name="dat_kieu_mau" id="dat_kieu_mau" class="border rounded p-2 w-full" required>
+                        <option value="Có" {% if data.dat_kieu_mau == 'Có' %}selected{% endif %}>Có</option>
+                        <option value="Không" {% if data.dat_kieu_mau == 'Không' %}selected{% endif %}>Không</option>
+                    </select>
+                </div>
+
+                <div class="flex space-x-4">
+                    <a href="{{ url_for('giamthi') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Quay lại</a>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Cập nhật</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-6">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Hệ Thống Quản Lý Thi Đua</h3>
+                    <p>Giải pháp quản lý học sinh và báo cáo hiệu quả, minh bạch và hiện đại.</p>
+                    <p>Trường THPT Cái Nước, Cà Mau</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Liên kết nhanh</h3>
+                    <ul>
+                        <li><a href="{{ url_for('home') }}" class="hover:underline">Trang Chủ</a></li>
+                        <li><a href="{{ url_for('giamthi') }}" class="hover:underline">Trang Giám Thị</a></li>
+                        <li><a href="{{ url_for('profile') }}" class="hover:underline">Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Liên hệ</h3>
+                    <p>Email: support@quanlylop.edu.vn</p>
+                    <p>Hotline: 0123 456 789</p>
+                </div>
+            </div>
+            <p class="mt-4 text-center">© 2025 Hệ Thống Quản Lý Thi Đua - Trường THPT Cái Nước. Mọi quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <div class="fixed bottom-4 right-4">
+        <button onclick="document.getElementById('profileModal').classList.toggle('hidden')" class="bg-blue-500 text-white px-4 py-2 rounded-full">×</button>
+        <div id="profileModal" class="hidden bg-white p-4 rounded-lg shadow-lg absolute bottom-12 right-0 w-64">
+            <h3 class="text-lg font-semibold mb-2">Thông Tin Cá Nhân</h3>
+            <p><strong>Tên người dùng:</strong> {{ session.get('username', 'N/A') }}</p>
+            <p><strong>Vai trò:</strong> {{ session.get('role', 'N/A') }}</p>
+            <p><strong>Tuần hiện tại:</strong> Tuần {{ session.get('tuan', 'Chưa gán') }}</p>
+            <p><strong>Lớp trực:</strong> {{ session.get('lop_truc', 'Chưa gán') }}</p>
+            <a href="{{ url_for('profile') }}" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 block text-center hover:bg-blue-600">Chỉnh sửa Profile</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileModal = document.getElementById('profileModal');
+            document.addEventListener('click', (e) => {
+                if (!profileModal.contains(e.target) && !e.target.closest('button')) {
+                    profileModal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

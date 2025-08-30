@@ -1,0 +1,132 @@
+:root {
+    --primary-color: #007BFF;
+    --secondary-color: #6c757d;
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --success-color: #28a745;
+    --accent-color: #28a745;
+    --font-color: #333;
+    --background-color: #f9f9f9;
+    --white: #fff;
+    --border-radius: 8px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 20px;
+    color: var(--font-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.user-info p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.status-text {
+    font-weight: bold;
+}
+
+.actions {
+    margin: 20px 0;
+}
+
+.actions a,
+.actions button {
+    text-decoration: none;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    margin: 5px;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.button-primary { background-color: var(--primary-color); }
+.button-secondary { background-color: var(--secondary-color); }
+.button-info { background-color: var(--info-color); }
+.button-warning { background-color: var(--warning-color); }
+.button-danger { background-color: var(--danger-color); }
+
+.button-warning:disabled {
+    background-color: #e0a800;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table thead {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+table th, table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.flash-message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: var(--border-radius);
+    color: #fff;
+}
+
+.flash-message.success { background-color: var(--success-color); }
+.flash-message.error { background-color: var(--danger-color); }
+.flash-message.warning { background-color: var(--warning-color); }
+
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    table td {
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        font-weight: bold;
+        text-align: left;
+        white-space: nowrap;
+    }
+}

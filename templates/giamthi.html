@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Giám Thị</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header>
+    <h1>Hệ Thống Giám Thị</h1>
+    <nav>
+        <a href="#" id="btnNoiQuy"><i class="fas fa-gavel"></i> Nội Quy</a>
+        <a href="#" id="btnHocTap"><i class="fas fa-book-open"></i> Học Tập</a>
+        <a href="#" id="btnTongKet"><i class="fas fa-chart-bar"></i> Tổng Kết</a>
+        <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+    </nav>
+</header>
+
+<main>
+    <section id="chonThongTin">
+        <label for="tuan">Tuần:</label>
+        <select id="tuan"></select>
+
+        <label for="lopTruc">Lớp trực:</label>
+        <select id="lopTruc"></select>
+    </section>
+
+    <section id="noiDung">
+        <!-- Nội Quy -->
+        <div id="noiQuySection" style="display:none;">
+            <h2>Nhập / Chỉnh sửa Nội Quy</h2>
+            <form id="formNoiQuy">
+                <input type="text" id="noiDungViPham" placeholder="Nội dung vi phạm" required>
+                <input type="number" id="diemTru" placeholder="Điểm trừ" required>
+                <input type="number" id="soLuotViPham" placeholder="Số lượt vi phạm">
+                <input type="text" id="tenHocSinh" placeholder="Tên học sinh vi phạm">
+                <button type="submit">Lưu</button>
+            </form>
+            <table id="bangNoiQuy">
+                <thead>
+                    <tr>
+                        <th>Nội dung</th>
+                        <th>Điểm trừ</th>
+                        <th>Số lượt</th>
+                        <th>Học sinh</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Học Tập -->
+        <div id="hocTapSection" style="display:none;">
+            <h2>Nhập / Chỉnh sửa Học Tập</h2>
+            <form id="formHocTap">
+                <input type="number" id="gioA" placeholder="Số giờ A">
+                <input type="number" id="gioB" placeholder="Số giờ B">
+                <input type="number" id="gioC" placeholder="Số giờ C">
+                <input type="number" id="gioD" placeholder="Số giờ D">
+                <select id="kieuMau">
+                    <option value="">-- Đạt kiểu mẫu? --</option>
+                    <option value="Yes">Có</option>
+                    <option value="No">Không</option>
+                </select>
+                <button type="submit">Lưu</button>
+            </form>
+            <table id="bangHocTap">
+                <thead>
+                    <tr>
+                        <th>Giờ A</th>
+                        <th>Giờ B</th>
+                        <th>Giờ C</th>
+                        <th>Giờ D</th>
+                        <th>Kiểu mẫu</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Tổng Kết -->
+        <div id="tongKetSection" style="display:none;">
+            <h2>Tổng Kết</h2>
+            <div id="ketQuaTongKet"></div>
+        </div>
+    </section>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    // Lấy danh sách tuần & lớp trực
+    try {
+        const res = await fetch("{{ url_for('api_tuan_loptruc') }}");
+        const data = await res.json();
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        const tuanSelect = document.getElementById("tuan");
+        data.tuan.forEach(t => {
+            const opt = document.createElement("option");
+            opt.value = t;
+            opt.textContent = t;
+            tuanSelect.appendChild(opt);
+        });
+
+        const lopSelect = document.getElementById("lopTruc");
+        data.lop.forEach(l => {
+            const opt = document.createElement("option");
+            opt.value = l;
+            opt.textContent = l;
+            lopSelect.appendChild(opt);
+        });
+    } catch (err) {
+        console.error("Lỗi tải danh sách:", err);
+    }
+
+    // Chuyển tab
+    document.getElementById("btnNoiQuy").addEventListener("click", () => {
+        anTatCa(); document.getElementById("noiQuySection").style.display = "block";
+        taiNoiQuy();
+    });
+    document.getElementById("btnHocTap").addEventListener("click", () => {
+        anTatCa(); document.getElementById("hocTapSection").style.display = "block";
+        taiHocTap();
+    });
+    document.getElementById("btnTongKet").addEventListener("click", () => {
+        anTatCa(); document.getElementById("tongKetSection").style.display = "block";
+        taiTongKet();
+    });
+
+    function anTatCa() {
+        document.getElementById("noiQuySection").style.display = "none";
+        document.getElementById("hocTapSection").style.display = "none";
+        document.getElementById("tongKetSection").style.display = "none";
+    }
+
+    // Tải Nội Quy
+    async function taiNoiQuy() {
+        const tuan = document.getElementById("tuan").value;
+        const lop = document.getElementById("lopTruc").value;
+        const res = await fetch(`/noi_quy?tuan=${tuan}&lop=${lop}`);
+        const data = await res.json();
+        const tbody = document.querySelector("#bangNoiQuy tbody");
+        tbody.innerHTML = "";
+        data.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${row.noidung}</td>
+                            <td>${row.diemtru}</td>
+                            <td>${row.solanhv}</td>
+                            <td>${row.hocsinh}</td>
+                            <td><button data-id="${row.id}">Sửa</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Tải Học Tập
+    async function taiHocTap() {
+        const tuan = document.getElementById("tuan").value;
+        const lop = document.getElementById("lopTruc").value;
+        const res = await fetch(`/hoc_tap?tuan=${tuan}&lop=${lop}`);
+        const data = await res.json();
+        const tbody = document.querySelector("#bangHocTap tbody");
+        tbody.innerHTML = "";
+        data.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${row.gioA}</td>
+                            <td>${row.gioB}</td>
+                            <td>${row.gioC}</td>
+                            <td>${row.gioD}</td>
+                            <td>${row.kieumau}</td>
+                            <td><button data-id="${row.id}">Sửa</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Tải Tổng Kết
+    async function taiTongKet() {
+        const tuan = document.getElementById("tuan").value;
+        const lop = document.getElementById("lopTruc").value;
+        const res = await fetch(`/tong_ket?tuan=${tuan}&lop=${lop}`);
+        const html = await res.text();
+        document.getElementById("ketQuaTongKet").innerHTML = html;
+    }
+});
+</script>
+</body>
+</html>

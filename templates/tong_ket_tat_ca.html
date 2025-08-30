@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tổng Kết Tất Cả - Hệ thống Quản lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --background: #f1f5f9;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --border: #d1d5db;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+        }
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -260px;
+            background-color: var(--primary);
+            color: white;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .sidebar .nav-links {
+            padding: 1rem;
+        }
+
+        .sidebar .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .sidebar .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-links a i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            animation: slideIn 0.5s ease;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h2 i {
+            margin-right: 0.75rem;
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .button-success {
+            background-color: #28a745;
+        }
+
+        .button-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .button-primary {
+            background-color: var(--primary);
+        }
+
+        .button-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background-color: var(--card-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px var(--border);
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--primary);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-end;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: var(--shadow);
+            animation: modalFadeIn 0.3s;
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: var(--text);
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .flash-message {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .flash-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .flash-error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
+        }
+
+        .flash-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .flash-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .flash-message i {
+            margin-right: 0.5rem;
+        }
+
+        /* Table container for responsive scrolling */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 0 1px var(--border);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 1024px) {
+            .navbar .menu-toggle {
+                display: none;
+            }
+            .sidebar {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 260px;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .main-content {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            h2 {
+                font-size: 1.25rem;
+            }
+            table {
+                font-size: 0.9rem;
+            }
+            th, td {
+                padding: 0.5rem;
+            }
+            .button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            .filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-item {
+                min-width: 100%;
+            }
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 1rem;
+            }
+            .container {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+            .sidebar {
+                width: 220px;
+                left: -220px;
+            }
+            .sidebar .logo {
+                font-size: 1.2rem;
+                padding: 1rem;
+            }
+            .sidebar .nav-links a {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            table {
+                font-size: 0.8rem;
+            }
+            th, td {
+                padding: 0.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar flex items-center justify-between">
+        <div class="flex items-center">
+            <i class="fas fa-bars menu-toggle text-2xl text-gray-700 mr-4" id="menuToggle"></i>
+            <div class="text-xl font-bold text-gray-800">HỆ THỐNG QUẢN LÝ</div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo"><i class="fas fa-school"></i> HỆ THỐNG QUẢN LÝ</div>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Trang Chủ</a>
+            {% if session.get('role') == 'admin' %}
+            <a href="{{ url_for('index') }}"><i class="fas fa-users-cog"></i> Quản Lý Tài Khoản</a>
+            <a href="{{ url_for('tong_ket') }}"><i class="fas fa-chart-bar"></i> Trang Tổng Kết</a>
+            <a href="{{ url_for('tong_ket_tat_ca') }}"><i class="fas fa-chart-line"></i> Tổng Kết Tất Cả</a>
+            {% endif %}
+            {% if session.get('role') in ['user', 'viewer'] %}
+            <a href="{{ url_for('user') }}"><i class="fas fa-user"></i> Trang của tôi</a>
+            {% endif %}
+            <a href="#" id="profileBtnSidebar"><i class="fas fa-user-circle"></i> Profile</a>
+            <a href="{{ url_for('hoc_tap') }}"><i class="fas fa-book-open"></i> Học Tập</a>
+            <a href="{{ url_for('noi_quy') }}"><i class="fas fa-gavel"></i> Nội Quy</a>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    <i class="fas 
+                        {% if category == 'success' %}fa-check-circle{% endif %}
+                        {% if category == 'error' %}fa-exclamation-circle{% endif %}
+                        {% if category == 'warning' %}fa-exclamation-triangle{% endif %}
+                        {% if category == 'info' %}fa-info-circle{% endif %}
+                    "></i>
+                    {{ message | safe }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            
+            <form class="filter-form">
+                <div class="filter-item">
+                    <label for="tuanSelect">Chọn tuần:</label>
+                    <select name="tuan" id="tuanSelect" class="w-full p-2 border rounded">
+                        <option value="">-- Tất cả tuần --</option>
+                        {% for week in available_weeks %}
+                        <option value="{{ week }}" {% if week == selected_tuan and not view_all %}selected{% endif %}>Tuần {{ week }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="khoiSelect">Chọn khối:</label>
+                    <select name="khoi" id="khoiSelect" class="w-full p-2 border rounded">
+                        <option value="">-- Tất cả khối --</option>
+                        {% for block in available_khoi %}
+                        <option value="{{ block }}" {% if block == selected_khoi %}selected{% endif %}>Khối {{ block }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <button type="submit" class="button button-primary w-full"><i class="fas fa-eye"></i> Xem</button>
+                </div>
+                <div class="filter-item">
+                    <a href="{{ url_for('tong_ket_tat_ca', view_all='true') }}" class="button button-primary w-full inline-flex justify-center"><i class="fas fa-eye"></i> Xem tất cả</a>
+                </div>
+            </form>
+            
+            {% if data %}
+            <div class="flex justify-end mb-4">
+                <a href="{{ url_for('export_tong_ket_tat_ca', tuan=selected_tuan, view_all='true' if view_all else 'false') }}" class="button button-success"><i class="fas fa-file-excel"></i> Xuất Excel</a>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tuần</th>
+                            <th>Khối</th>
+                            <th>Lớp</th>
+                            <th>Giờ A</th>
+                            <th>Giờ B</th>
+                            <th>Giờ C</th>
+                            <th>Giờ D</th>
+                            <th>Số Lượt Vi Phạm</th>
+                            <th>Nội Dung Vi Phạm</th>
+                            <th>Học Sinh Vi Phạm</th>
+                            <th>Tổng Điểm Học Tập</th>
+                            <th>Tổng Điểm Nội Quy</th>
+                            <th>Tổng Điểm Chung</th>
+                            <th>Xếp Hạng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in data %}
+                        <tr>
+                            <td>{{ item.tuan }}</td>
+                            <td>{{ item.khoi }}</td>
+                            <td>{{ item.lop_truc }}</td>
+                            <td>{{ item.gio_a }}</td>
+                            <td>{{ item.gio_b }}</td>
+                            <td>{{ item.gio_c }}</td>
+                            <td>{{ item.gio_d }}</td>
+                            <td>{{ item.so_luot_vi_pham }}</td>
+                            <td>{{ item.noi_dung_vi_pham or 'Không có' }}</td>
+                            <td>{{ item.hoc_sinh_vi_pham or 'Không có' }}</td>
+                            <td>{{ item.tong_diem_hoc_tap }}</td>
+                            <td>{{ item.tong_diem_noi_quy }}</td>
+                            <td>{{ item.tong_diem_chung }}</td>
+                            <td>{{ item.xep_hang }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-8 bg-gray-50 rounded-lg">
+                <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-600">Không có dữ liệu tổng kết cho tuần và khối đã chọn.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeProfileModal">×</span>
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-user-circle mr-2"></i> Thông Tin Cá Nhân
+            </h3>
+            <div class="user-info-modal space-y-4">
+                <p><strong class="text-blue-600">Tên người dùng:</strong> {{ session.get('username', 'N/A') }}</p>
+                <p><strong class="text-blue-600">Vai trò:</strong> {{ session.get('role', 'N/A') }}</p>
+                <p><strong class="text-blue-600">Lớp:</strong> {{ session.get('lop', 'Chưa gán') }}</p>
+                <p><strong class="text-blue-600">Tuần hiện tại:</strong> Tuần {{ session.get('tuan', 'Chưa gán') }}</p>
+                <p><strong class="text-blue-600">Lớp trực:</strong> {{ session.get('lop_truc', 'Chưa gán') }}</p>
+                <div class="flex justify-center mt-6">
+                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition">
+                        <i class="fas fa-edit mr-2"></i> Chỉnh sửa Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Prevent sidebar close when clicking inside sidebar
+        sidebar.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Profile Modal handling
+        const profileModal = document.getElementById('profileModal');
+        const profileBtn = document.getElementById('profileBtnSidebar');
+        const profileSpan = document.getElementById('closeProfileModal');
+
+        if (profileBtn) {
+            profileBtn.onclick = (e) => {
+                e.preventDefault();
+                profileModal.style.display = 'flex';
+            };
+        }
+
+        if (profileSpan) {
+            profileSpan.onclick = () => {
+                profileModal.style.display = 'none';
+            };
+        }
+
+        window.onclick = (e) => {
+            if (e.target == profileModal) {
+                profileModal.style.display = 'none';
+            }
+        };
+
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(() => {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(message => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    message.remove();
+                }, 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

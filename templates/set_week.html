@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Tuần - HỆ THỐNG QUẢN LÝ THI ĐUA</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold">HỆ THỐNG QUẢN LÝ THI ĐUA</h1>
+        </div>
+    </header>
+
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between">
+            <div class="flex space-x-4">
+                <a href="{{ url_for('home') }}" class="hover:underline">Trang Chủ</a>
+                {% if session.get('role') in ['admin', 'giamthi'] %}
+                    <a href="{{ url_for('tong_ket') }}" class="hover:underline">Trang Tổng Kết</a>
+                    <a href="{{ url_for('tong_ket_tat_ca') }}" class="hover:underline">Tổng Kết Tất Cả</a>
+                    <a href="{{ url_for('phan_cong') }}" class="hover:underline">Phân Công Nhiệm Vụ</a>
+                {% endif %}
+                {% if session.get('role') == 'admin' %}
+                    <a href="{{ url_for('manage_accounts') }}" class="hover:underline">Quản Lý Tài Khoản</a>
+                {% endif %}
+                <a href="{{ url_for('profile') }}" class="hover:underline">Profile</a>
+                <a href="{{ url_for('hoc_tap') }}" class="hover:underline">Học Tập</a>
+                <a href="{{ url_for('noi_quy') }}" class="hover:underline">Nội Quy</a>
+                <a href="{{ url_for('logout') }}" class="hover:underline">Đăng Xuất</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="bg-{{ 'green-100' if category == 'success' else 'red-100' if category == 'error' else 'yellow-100' }} border-l-4 border-{{ 'green-500' if category == 'success' else 'red-500' if category == 'error' else 'yellow-500' }} p-4 mb-4">
+                        {{ message | safe }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <section class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Đặt Tuần Hiện Tại</h2>
+            <form method="POST">
+                <div class="mb-4">
+                    <label for="week_select" class="font-semibold">Chọn tuần:</label>
+                    <select name="week_select" id="week_select" class="border rounded p-2 w-full">
+                        {% for week in available_weeks %}
+                            <option value="{{ week }}" {% if week == session.get('tuan') %}selected{% endif %}>Tuần {{ week }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Xác nhận</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-6">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Hệ Thống Quản Lý Thi Đua</h3>
+                    <p>Giải pháp quản lý học sinh và báo cáo hiệu quả, minh bạch và hiện đại.</p>
+                    <p>Trường THPT Cái Nước, Cà Mau</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Liên kết nhanh</h3>
+                    <ul>
+                        <li><a href="{{ url_for('home') }}" class="hover:underline">Trang Chủ</a></li>
+                        <li><a href="{{ url_for('hoc_tap') }}" class="hover:underline">Học Tập</a></li>
+                        <li><a href="{{ url_for('noi_quy') }}" class="hover:underline">Nội Quy</a></li>
+                        <li><a href="{{ url_for('profile') }}" class="hover:underline">Dữ liệu của tôi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Liên hệ</h3>
+                    <p>Email: support@quanlylop.edu.vn</p>
+                    <p>Hotline: 0123 456 789</p>
+                </div>
+            </div>
+            <p class="mt-4 text-center">© 2025 Hệ Thống Quản Lý Thi Đua - Trường THPT Cái Nước. Mọi quyền được bảo lưu.</p>
+        </div>
+    </footer>
+</body>
+</html>

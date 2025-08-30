@@ -1,0 +1,89 @@
+-- Database chính
+CREATE DATABASE IF NOT EXISTS test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE test;
+
+-- Bảng accounts
+CREATE TABLE IF NOT EXISTS accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    username VARCHAR(50) UNIQUE,
+    password VARCHAR(100),
+    role VARCHAR(20),
+    lop VARCHAR(10),
+    tuan INT,
+    Capquanli VARCHAR(50),
+    lop_truc VARCHAR(20),
+    trangthai VARCHAR(50)
+);
+
+-- Bảng info_data
+CREATE TABLE IF NOT EXISTS info_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+
+-- Bảng rules_data (vi phạm nội quy)
+CREATE TABLE IF NOT EXISTS rules_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tuan INT,
+    lop VARCHAR(10),
+    noi_dung_vi_pham TEXT,
+    diem_tru INT,
+    tong_diem_vi_pham INT,
+    so_luot_vi_pham INT,
+    ten_hoc_sinh_vi_pham VARCHAR(255)
+);
+
+-- Bảng study_data (dữ liệu học tập)
+CREATE TABLE IF NOT EXISTS study_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tuan INT,
+    lop VARCHAR(10),
+    gio_a INT,
+    gio_b INT,
+    gio_c INT,
+    gio_d INT,
+    dat_kieu_mau VARCHAR(10),
+    tong_diem INT
+);
+
+-- Bảng tổng kết điểm
+CREATE TABLE IF NOT EXISTS bang_tong_ket (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tuan INT,
+    lop VARCHAR(10),
+    tong_diem_hoc_tap INT,
+    tong_diem_noi_quy INT,
+    tong_diem_chung INT,
+    class_id VARCHAR(10), -- tùy thuộc code nếu cần thêm
+    trang_thai VARCHAR(50) -- dùng nếu cần đánh dấu đã tổng kết
+);
+
+-- Bảng phân công trực (dữ liệu tự sinh)
+CREATE TABLE IF NOT EXISTS phan_cong_truc (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    khoi VARCHAR(10),
+    lop VARCHAR(10),
+    tuan INT,
+    lop_truc VARCHAR(10)
+);
+
+-- Bảng phân công chung
+CREATE TABLE IF NOT EXISTS phan_cong (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    khoi VARCHAR(10),
+    tuan INT,
+    lop VARCHAR(10),
+    lop_truc VARCHAR(10)
+);
+
+-- Bảng gán tuần cho lớp
+CREATE TABLE IF NOT EXISTS week_assignment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    lop VARCHAR(10),
+    tuan INT
+);
+
+
+SELECT username, tuan, trangthai FROM accounts;

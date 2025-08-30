@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Dữ Liệu Nội Quy (Giám Thị) - HỆ THỐNG QUẢN LÝ THI ĐUA</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold">HỆ THỐNG QUẢN LÝ THI ĐUA</h1>
+        </div>
+    </header>
+
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between">
+            <div class="flex space-x-4">
+                <a href="{{ url_for('home') }}" class="hover:underline">Trang Chủ</a>
+                <a href="{{ url_for('giamthi') }}" class="hover:underline">Trang Giám Thị</a>
+                <a href="{{ url_for('tong_ket') }}" class="hover:underline">Trang Tổng Kết</a>
+                <a href="{{ url_for('tong_ket_tat_ca') }}" class="hover:underline">Tổng Kết Tất Cả</a>
+                <a href="{{ url_for('profile') }}" class="hover:underline">Profile</a>
+                <a href="{{ url_for('logout') }}" class="hover:underline">Đăng Xuất</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6">
+        <section class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Thêm Dữ Liệu Nội Quy (Giám Thị)</h2>
+                <a href="{{ url_for('giamthi') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Quay lại</a>
+            </div>
+            <p>Nhập thông tin vi phạm nội quy của lớp để cập nhật vào hệ thống một cách nhanh chóng và chính xác.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="bg-{{ 'green-100' if category == 'success' else 'red-100' if category == 'error' else 'yellow-100' }} border-l-4 border-{{ 'green-500' if category == 'success' else 'red-500' if category == 'error' else 'yellow-500' }} p-4 mb-4">
+                            {{ message | safe }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('giamthi_add_noi_quy') }}">
+                <div class="mb-4">
+                    <label for="tuan" class="font-semibold">Tuần:</label>
+                    <select name="tuan" id="tuan" class="border rounded p-2 w-full" required>
+                        <option value="" disabled>-- Chọn tuần --</option>
+                        {% for tuan in available_tuan %}
+                            <option value="{{ tuan }}" {% if tuan == session.get('tuan') %}selected{% endif %}>Tuần {{ tuan }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="lop_truc" class="font-semibold">Lớp trực:</label>
+                    <select name="lop_truc" id="lop_truc" class="border rounded p-2 w-full" required>
+                        <option value="" disabled>-- Chọn lớp trực --</option>
+                        {% for lop in available_lop_truc %}
+                            <option value="{{ lop }}" {% if lop == session.get('lop_truc') %}selected{% endif %}>{{ lop }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="noi_dung_vi_pham" class="font-semibold">Nội dung vi phạm:</label>
+                    <select name="noi_dung_vi_pham" id="noi_dung_vi_pham" class="border rounded p-2 w-full" required>
+                        <option value="" disabled selected>-- Chọn lỗi vi phạm --</option>
+                        <option value="1.1. Trễ sinh hoạt đầu giờ">1.1. Trễ sinh hoạt đầu giờ</option>
+                        <option value="1.2. Vắng tiết CP">1.2. Vắng tiết CP</option>
+                        <option value="1.3. Vắng học CP">1.3. Vắng học CP</option>
+                        <option value="1.4. Bỏ tiết học không phép">1.4. Bỏ tiết học không phép</option>
+                        <option value="1.5. Vắng học KP">1.5. Vắng học KP</option>
+                        <option value="1.6. Vi phạm trang phục">1.6. Vi phạm trang phục</option>
+                        <option value="1.7. Vi phạm đầu tóc">1.7. Vi phạm đầu tóc</option>
+                        <option value="1.8. Không có bảng tên">1.8. Không có bảng tên</option>
+                        <option value="1.9. Đoàn viên không đeo huy hiệu">1.9. Đoàn viên không đeo huy hiệu</option>
+                        <option value="2.1. Không xếp hàng nghiêm túc">2.1. Không xếp hàng nghiêm túc</option>
+                        <option value="2.2. Cả lớp xếp hàng không nghiêm túc">2.2. Cả lớp xếp hàng không nghiêm túc</option>
+                        <option value="2.3. Cả lớp không xếp hàng">2.3. Cả lớp không xếp hàng</option>
+                        <option value="2.4. SHDC chậm ổn định">2.4. SHDC chậm ổn định</option>
+                        <option value="2.5. Hát Quốc ca không nghiêm túc">2.5. Hát Quốc ca không nghiêm túc</option>
+                        <option value="2.6. Ra ngoài 15p đầu giờ không phép">2.6. Ra ngoài 15p đầu giờ không phép</option>
+                        <option value="3.1. Bàn ghế không gọn">3.1. Bàn ghế không gọn</option>
+                        <option value="3.2. Viết vẽ bậy">3.2. Viết vẽ bậy</option>
+                        <option value="3.3. Không vệ sinh lớp">3.3. Không vệ sinh lớp</option>
+                        <option value="3.4. Ngồi, đứng, đi trên bàn">3.4. Ngồi, đứng, đi trên bàn</option>
+                        <option value="3.5. Không tắt cầu dao">3.5. Không tắt cầu dao</option>
+                        <option value="3.6. Lớp trực tuần không sạch">3.6. Lớp trực tuần không sạch</option>
+                        <option value="3.7. Không xếp ghế sau sinh hoạt">3.7. Không xếp ghế sau sinh hoạt</option>
+                        <option value="3.8. Phá hoại cây xanh, tài sản">3.8. Phá hoại cây xanh, tài sản</option>
+                        <option value="3.9. Lớp bỏ trực tuần">3.9. Lớp bỏ trực tuần</option>
+                        <option value="3.10. Không trang trí buổi lễ">3.10. Không trang trí buổi lễ</option>
+                        <option value="4.1. Không ghi thống kê sổ">4.1. Không ghi thống kê sổ</option>
+                        <option value="4.2. Gian lận sĩ số">4.2. Gian lận sĩ số</option>
+                        <option value="4.3. Mất sổ theo dõi">4.3. Mất sổ theo dõi</option>
+                        <option value="5.1. Không ghi tiêu đề bảng">5.1. Không ghi tiêu đề bảng</option>
+                        <option value="5.2. Không nộp cờ thi đua">5.2. Không nộp cờ thi đua</option>
+                        <option value="5.3. Chạy xe trong sân">5.3. Chạy xe trong sân</option>
+                        <option value="5.4. Làm việc riêng trong giờ">5.4. Làm việc riêng trong giờ</option>
+                        <option value="5.5. Nhắc nhở không có biên bản">5.5. Nhắc nhở không có biên bản</option>
+                        <option value="5.6. Lập biên bản kiểm tra">5.6. Lập biên bản kiểm tra</option>
+                        <option value="5.7. Dùng điện thoại trong giờ">5.7. Dùng điện thoại trong giờ</option>
+                        <option value="5.8. Nói tục, thô lỗ">5.8. Nói tục, thô lỗ</option>
+                        <option value="5.9. Không tổng kết cờ đỏ">5.9. Không tổng kết cờ đỏ</option>
+                        <option value="5.10. Không khai báo khi bị phát hiện">5.10. Không khai báo khi bị phát hiện</option>
+                        <option value="5.11. Mang đồ ăn vào trường">5.11. Mang đồ ăn vào trường</option>
+                        <option value="5.12. Nhận hàng online trong giờ">5.12. Nhận hàng online trong giờ</option>
+                        <option value="5.13. Cản trở lớp khác">5.13. Cản trở lớp khác</option>
+                        <option value="5.14. Gian lận kiểm tra">5.14. Gian lận kiểm tra</option>
+                        <option value="5.15. Gian lận hồ sơ">5.15. Gian lận hồ sơ</option>
+                        <option value="5.16. Tổ chức trò chơi ồn">5.16. Tổ chức trò chơi ồn</option>
+                        <option value="5.17. Xâm phạm thân thể, nhân phẩm">5.17. Xâm phạm thân thể, nhân phẩm</option>
+                        <option value="5.18. Đánh nhau, quay clip">5.18. Đánh nhau, quay clip</option>
+                        <option value="6.1. Vi phạm pháp luật">6.1. Vi phạm pháp luật</option>
+                        <option value="6.2. Vi phạm giao thông">6.2. Vi phạm giao thông</option>
+                        <option value="6.3. Không đội mũ bảo hiểm">6.3. Không đội mũ bảo hiểm</option>
+                        <option value="6.4. Không tắt máy xe khi vào trường">6.4. Không tắt máy xe khi vào trường</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="diem_tru" class="font-semibold">Điểm trừ:</label>
+                    <input type="number" name="diem_tru" id="diem_tru" class="border rounded p-2 w-full" value="0" min="0" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="so_luot_vi_pham" class="font-semibold">Số lượt vi phạm:</label>
+                    <input type="number" name="so_luot_vi_pham" id="so_luot_vi_pham" class="border rounded p-2 w-full" value="1" min="1" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="ten_hoc_sinh_vi_pham" class="font-semibold">Tên học sinh vi phạm:</label>
+                    <input type="text" name="ten_hoc_sinh_vi_pham" id="ten_hoc_sinh_vi_pham" class="border rounded p-2 w-full">
+                </div>
+
+                <div class="flex space-x-4">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Thêm vi phạm</button>
+                    <a href="{{ url_for('giamthi') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Quay lại</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-6">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Hệ Thống Quản Lý Thi Đua</h3>
+                    <p>Giải pháp quản lý học sinh và báo cáo hiệu quả, minh bạch và hiện đại.</p>
+                    <p>Trường THPT Cái Nước, Cà Mau</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Liên kết nhanh</h3>
+                    <ul>
+                        <li><a href="{{ url_for('home') }}" class="hover:underline">Trang Chủ</a></li>
+                        <li><a href="{{ url_for('giamthi') }}" class="hover:underline">Trang Giám Thị</a></li>
+                        <li><a href="{{ url_for('profile') }}" class="hover:underline">Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Liên hệ</h3>
+                    <p>Email: support@quanlylop.edu.vn</p>
+                    <p>Hotline: 0123 456 789</p>
+                </div>
+            </div>
+            <p class="mt-4 text-center">© 2025 Hệ Thống Quản Lý Thi Đua - Trường THPT Cái Nước. Mọi quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <div class="fixed bottom-4 right-4">
+        <button onclick="document.getElementById('profileModal').classList.toggle('hidden')" class="bg-blue-500 text-white px-4 py-2 rounded-full">×</button>
+        <div id="profileModal" class="hidden bg-white p-4 rounded-lg shadow-lg absolute bottom-12 right-0 w-64">
+            <h3 class="text-lg font-semibold mb-2">Thông Tin Cá Nhân</h3>
+            <p><strong>Tên người dùng:</strong> {{ session.get('username', 'N/A') }}</p>
+            <p><strong>Vai trò:</strong> {{ session.get('role', 'N/A') }}</p>
+            <p><strong>Tuần hiện tại:</strong> Tuần {{ session.get('tuan', 'Chưa gán') }}</p>
+            <p><strong>Lớp trực:</strong> {{ session.get('lop_truc', 'Chưa gán') }}</p>
+            <a href="{{ url_for('profile') }}" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 block text-center hover:bg-blue-600">Chỉnh sửa Profile</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileModal = document.getElementById('profileModal');
+            document.addEventListener('click', (e) => {
+                if (!profileModal.contains(e.target) && !e.target.closest('button')) {
+                    profileModal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

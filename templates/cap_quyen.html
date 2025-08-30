@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cấp quyền tài khoản</title>
+    <style>
+        body { font-family: Arial; padding: 40px; background: #f7f7f7; }
+        .form-box {
+            background: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #4CAF50; }
+        label { display: block; margin-top: 20px; font-weight: bold; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="form-box">
+        <h2>Cấp quyền tài khoản</h2>
+        <form method="POST">
+            <label for="username">Tên đăng nhập:</label>
+            <input type="text" name="username" required>
+
+            <label for="role">Cấp quyền:</label>
+            <select name="role" required>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+
+            <button type="submit">Cập nhật</button>
+        </form>
+    </div>
+</body>
+</html>

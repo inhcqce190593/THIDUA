@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Dữ liệu Nội Quy</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { padding-top: 20px; background-color: #f8f9fa; }
+        .container { max-width: 600px; }
+        .alert { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mb-4">Thêm Dữ liệu Vi phạm Nội Quy</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert_messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('add_noi_quy_user') }}" method="post">
+            <div class="form-group">
+                <label for="tuan">Tuần:</label>
+                <input type="text" class="form-control" id="tuan" name="tuan" value="{{ tuan }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="lop">Lớp:</label>
+                <input type="text" class="form-control" id="lop" name="lop" value="{{ lop_truc }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="vi_pham">Nội dung vi phạm:</label>
+                <input type="text" class="form-control" id="vi_pham" name="vi_pham" required>
+            </div>
+            <div class="form-group">
+                <label for="diem_tru">Điểm trừ mỗi lượt:</label>
+                <input type="number" class="form-control" id="diem_tru" name="diem_tru" min="0" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="so_luot">Số lượt vi phạm:</label>
+                <input type="number" class="form-control" id="so_luot" name="so_luot" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+                <label for="hoc_sinh">Tên học sinh vi phạm (nếu có):</label>
+                <input type="text" class="form-control" id="hoc_sinh" name="hoc_sinh">
+            </div>
+            <button type="submit" class="btn btn-primary">Thêm Dữ liệu</button>
+            <a href="{{ url_for('user') }}" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 8px 0; }
+        a { text-decoration: none; color: #007BFF; }
+        a:hover { text-decoration: underline; }
+        form input, form textarea, form button {
+            display: block;
+            margin: 8px 0;
+            padding: 8px;
+            width: 100%;
+            max-width: 400px;
+        }<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Trang Chủ</title>
+        </head>
+        <body>
+            <h1>Trang Chủ</h1>
+        
+            <!-- Form Thêm Dữ Liệu Học Tập -->
+            <h2>Thêm Dữ Liệu Học Tập</h2>
+            <form method="POST" action="/add-hoc-tap">
+                <input type="text" name="tuan" placeholder="Tuần" required>
+                <input type="text" name="lop" placeholder="Lớp" required>
+                <input type="number" name="gio_a" placeholder="Số giờ A" required>
+                <input type="number" name="gio_b" placeholder="Số giờ B" required>
+                <input type="number" name="gio_c" placeholder="Số giờ C" required>
+                <input type="number" name="gio_d" placeholder="Số giờ D" required>
+                <input type="text" name="dat_kieu_mau" placeholder="Đạt kiểu mẫu" required>
+                <button type="submit">Thêm Dữ Liệu</button>
+            </form>
+        
+            <hr>
+        
+            <!-- Form Thêm Dữ Liệu Nội Quy -->
+            <h2>Thêm Dữ Liệu Nội Quy</h2>
+            <form method="POST" action="/add-noi-quy">
+                <input type="text" name="tuan" placeholder="Tuần" required>
+                <input type="text" name="lop" placeholder="Lớp" required>
+                <textarea name="noi_dung_vi_pham" placeholder="Nội dung vi phạm" required></textarea>
+                <input type="text" name="danh_gia" placeholder="Đánh giá" required>
+                <input type="number" name="so_luot_vi_pham" placeholder="Số lượt vi phạm" required>
+                <button type="submit">Thêm Dữ Liệu</button>
+            </form>
+        
+            <hr>
+        
+            <!-- Dữ Liệu Học Tập -->
+            <h2>Dữ Liệu Học Tập</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Tuần</th>
+                        <th>Lớp</th>
+                        <th>Giờ A</th>
+                        <th>Giờ B</th>
+                        <th>Giờ C</th>
+                        <th>Giờ D</th>
+                        <th>Đạt Kiểu Mẫu</th>
+                        <th>Tổng Điểm</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in study_data %}
+                    <tr>
+                        <td>{{ item.tuan }}</td>
+                        <td>{{ item.lop }}</td>
+                        <td>{{ item.gio_a }}</td>
+                        <td>{{ item.gio_b }}</td>
+                        <td>{{ item.gio_c }}</td>
+                        <td>{{ item.gio_d }}</td>
+                        <td>{{ item.dat_kieu_mau }}</td>
+                        <td>{{ item.tong_diem }}</td>
+                        <td>
+                            <form method="POST" action="/delete-hoc-tap" style="display:inline;">
+                                <input type="hidden" name="data_id" value="{{ item.id }}">
+                                <button type="submit">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        
+            <hr>
+        
+            <!-- Dữ Liệu Nội Quy -->
+            <h2>Dữ Liệu Nội Quy</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Tuần</th>
+                        <th>Lớp</th>
+                        <th>Nội Dung Vi Phạm</th>
+                        <th>Đánh Giá</th>
+                        <th>Số Lượt Vi Phạm</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in rules_data %}
+                    <tr>
+                        <td>{{ item.tuan }}</td>
+                        <td>{{ item.lop }}</td>
+                        <td>{{ item.noi_dung_vi_pham }}</td>
+                        <td>{{ item.danh_gia }}</td>
+                        <td>{{ item.so_luot_vi_pham }}</td>
+                        <td>
+                            <form method="POST" action="/delete-noi-quy" style="display:inline;">
+                                <input type="hidden" name="data_id" value="{{ item.id }}">
+                                <button type="submit">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </body>
+        </html>
+        
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        h2 { margin-top: 40px; }
+    </style>
+</head>
+<body>
+    {% if 'username' in session %}
+        <h1>Chào {{ session['username'] }}!</h1>
+        <p><strong>Lớp trực:</strong> {{ lop }}</p>
+        <p><strong>Tuần:</strong> {{ tuan }}</p>
+
+        <h2>Chức năng</h2>
+        <ul>
+            {% if session['role'] == 'admin' %}
+                <li><a href="{{ url_for('admin') }}">🛠 Quản lý thông tin</a></li>
+                <li><a href="{{ url_for('tong_ket') }}">📊 Tổng kết</a></li>
+            {% endif %}
+            {% if session['role'] in ['admin', 'user'] %}
+                <li><a href="{{ url_for('hoc_tap') }}">📘 Học tập</a></li>
+                <li><a href="{{ url_for('noi_quy') }}">📒 Nội quy</a></li>
+            {% endif %}
+            {% if session['role'] == 'user' %}
+                <li><a href="{{ url_for('user') }}">👤 Trang người dùng</a></li>
+            {% elif session['role'] == 'viewer' %}
+                <li><a href="{{ url_for('viewer') }}">👁 Trang xem</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('logout') }}">🚪 Đăng xuất</a></li>
+        </ul>
+
+        <!-- Form Thêm Dữ Liệu Học Tập -->
+        <h2>✍️ Thêm Dữ Liệu Học Tập</h2>
+        <form method="POST">
+            <input type="text" name="tuan" placeholder="Tuần" required>
+            <input type="text" name="lop" placeholder="Lớp" required>
+            <input type="number" name="gio_a" placeholder="Số giờ A" required>
+            <input type="number" name="gio_b" placeholder="Số giờ B" required>
+            <input type="number" name="gio_c" placeholder="Số giờ C" required>
+            <input type="number" name="gio_d" placeholder="Số giờ D" required>
+            <input type="text" name="dat_kieu_mau" placeholder="Đạt kiểu mẫu" required>
+            <button type="submit" name="add_study_data">Thêm Dữ Liệu</button>
+        </form>
+
+        <!-- Form Thêm Dữ Liệu Nội Quy -->
+        <h2>✍️ Thêm Dữ Liệu Nội Quy</h2>
+        <form method="POST">
+            <input type="text" name="tuan" placeholder="Tuần" required>
+            <input type="text" name="lop" placeholder="Lớp" required>
+            <textarea name="noi_dung_vi_pham" placeholder="Nội dung vi phạm" required></textarea>
+            <input type="text" name="danh_gia" placeholder="Đánh giá" required>
+            <input type="number" name="so_luot_vi_pham" placeholder="Số lượt vi phạm" required>
+            <button type="submit" name="add_rules_data">Thêm Dữ Liệu</button>
+        </form>
+
+        <!-- Phần Học Tập -->
+        <h2>📘 Dữ Liệu Học Tập</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tuần</th>
+                    <th>Lớp</th>
+                    <th>Giờ A</th>
+                    <th>Giờ B</th>
+                    <th>Giờ C</th>
+                    <th>Giờ D</th>
+                    <th>Đạt kiểu mẫu</th>
+                    <th>Tổng điểm</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in study_data %}
+                <tr>
+                    <td>{{ item.tuan }}</td>
+                    <td>{{ item.lop }}</td>
+                    <td>{{ item.gio_a }}</td>
+                    <td>{{ item.gio_b }}</td>
+                    <td>{{ item.gio_c }}</td>
+                    <td>{{ item.gio_d }}</td>
+                    <td>{{ item.dat_kieu_mau }}</td>
+                    <td>{{ item.tong_diem }}</td>
+                    <td>
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="data_id" value="{{ item.id }}">
+                            <button type="submit" name="delete_data">Xóa</button>
+                        </form>
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="data_id" value="{{ item.id }}">
+                            <button type="submit" name="update_data">Cập nhật</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Phần Nội Quy -->
+        <h2>📒 Dữ Liệu Nội Quy</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tuần</th>
+                    <th>Lớp</th>
+                    <th>Nội dung vi phạm</th>
+                    <th>Đánh giá</th>
+                    <th>Số lượt vi phạm</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in rules_data %}
+                <tr>
+                    <td>{{ item.tuan }}</td>
+                    <td>{{ item.lop }}</td>
+                    <td>{{ item.noi_dung_vi_pham }}</td>
+                    <td>{{ item.danh_gia }}</td>
+                    <td>{{ item.so_luot_vi_pham }}</td>
+                    <td>
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="data_id" value="{{ item.id }}">
+                            <button type="submit" name="delete_data">Xóa</button>
+                        </form>
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="data_id" value="{{ item.id }}">
+                            <button type="submit" name="update_data">Cập nhật</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <p>Vui lòng <a href="{{ url_for('login') }}">đăng nhập</a> để truy cập nội dung.</p>
+    {% endif %}
+</body>
+</html>

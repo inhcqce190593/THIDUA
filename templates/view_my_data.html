@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dữ liệu của Tôi</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { padding-top: 20px; background-color: #f8f9fa; }
+        .container { max-width: 1000px; }
+        .table-responsive { margin-top: 20px; }
+        .alert { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mb-4">Dữ liệu của tôi (Lớp: {{ lop_truc }}, Tuần: {{ tuan }})</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert_messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="study-tab" data-toggle="tab" href="#study" role="tab" aria-controls="study" aria-selected="true">Dữ liệu Học tập</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="rules-tab" data-toggle="tab" href="#rules" role="tab" aria-controls="rules" aria-selected="false">Dữ liệu Nội Quy</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="study" role="tabpanel" aria-labelledby="study-tab">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tuần</th>
+                                <th>Lớp</th>
+                                <th>Giờ A (+5)</th>
+                                <th>Giờ B (-5)</th>
+                                <th>Giờ C (-15)</th>
+                                <th>Giờ D (-25)</th>
+                                <th>Đạt kiểu mẫu</th>
+                                <th>Tổng điểm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in study_data %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.tuan }}</td>
+                                <td>{{ item.lop }}</td>
+                                <td>{{ item.gio_a }}</td>
+                                <td>{{ item.gio_b }}</td>
+                                <td>{{ item.gio_c }}</td>
+                                <td>{{ item.gio_d }}</td>
+                                <td>{{ item.dat_kieu_mau }}</td>
+                                <td>{{ item.tong_diem }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="9">Không có dữ liệu học tập nào cho lớp {{ lop_truc }} trong tuần {{ tuan }}.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tuần</th>
+                                <th>Lớp</th>
+                                <th>Nội dung vi phạm</th>
+                                <th>Điểm trừ</th>
+                                <th>Số lượt</th>
+                                <th>Tổng điểm vi phạm</th>
+                                <th>Học sinh vi phạm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in rules_data %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.tuan }}</td>
+                                <td>{{ item.lop }}</td>
+                                <td>{{ item.noi_dung_vi_pham }}</td>
+                                <td>{{ item.diem_tru }}</td>
+                                <td>{{ item.so_luot_vi_pham }}</td>
+                                <td>{{ item.tong_diem_vi_pham }}</td>
+                                <td>{{ item.ten_hoc_sinh_vi_pham }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="8">Không có dữ liệu vi phạm nội quy nào cho lớp {{ lop_truc }} trong tuần {{ tuan }}.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ url_for('user') }}" class="btn btn-secondary">Quay lại Trang Người Dùng</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

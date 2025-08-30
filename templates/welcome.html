@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chào Mừng - Hệ Thống Quản Lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #1e40af; /* Modern blue */
+            --secondary: #3b82f6; /* Vibrant blue */
+            --accent: #f59e0b; /* Warm amber */
+            --background: #f1f5f9; /* Softer slate background */
+            --card-bg: #ffffff;
+            --text: #0f172a; /* Darker slate text */
+            --border: #d1d5db; /* Lighter border */
+            --shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.1), 0 3px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+            margin: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 1.25rem 2.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header .logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .header .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+            border-radius: 0 0 1.5rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            z-index: 0;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            position: relative;
+            z-index: 1;
+            color: #e2e8f0;
+        }
+
+        .hero .cta-button {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .hero .cta-button:hover {
+            background-color: #d97706;
+            transform: translateY(-2px);
+        }
+
+        /* Welcome Content */
+        .welcome-content {
+            background-color: var(--card-bg);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            padding: 3rem;
+            max-width: 800px;
+            margin: 3rem auto;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .welcome-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-content h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .welcome-content p {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .sign-in-button {
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .sign-in-button:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        /* Flash Messages */
+        .flashes {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .alert {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            animation: fadeIn 0.4s ease;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .alert i {
+            margin-right: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .alert.bg-green-100 {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.bg-red-100 {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #111827;
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #d97706;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 3rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .welcome-content {
+                padding: 2rem;
+                margin: 2rem auto;
+            }
+
+            .welcome-content h2 {
+                font-size: 1.75rem;
+            }
+
+            .welcome-content p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-tr from-blue-600 via-blue-400 to-blue-300 min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVNr4kFMUUnb1g0yhLxSN0ZrUKTAGKPnD0fw&s" alt="Logo" />
+      <span>Hệ Thống Thi Đua</span>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>Chào Mừng Đến Với Hệ Thống Quản Lý Thi Đua</h1>
+    <p>Khám phá một nền tảng trực tuyến tiên tiến, nơi bạn có thể quản lý hiệu quả các hoạt động thi đua, theo dõi thành tích học tập và nề nếp của học sinh tại Trường THPT Cái Nước.</p>
+    <a href="#intro" class="cta-button">Khám Phá Ngay</a>
+  </div>
+
+  <!-- Welcome Content -->
+  <div class="welcome-content">
+    <h2><i class="fas fa-star"></i> Chào Mừng Bạn Đến Với Hệ Thống</h2>
+    <p>Chào mừng bạn đến với Hệ Thống Quản Lý Thi Đua của Trường THPT Cái Nước – một nền tảng hiện đại giúp quản lý và theo dõi các hoạt động giáo dục một cách hiệu quả. Đây là nơi bạn có thể khám phá các công cụ tiên tiến để cập nhật thành tích học tập, quản lý nội quy, và theo dõi tiến độ thi đua của học sinh.</p>
+    {% if not session.get('logged_in') %}
+    <a href="{{ url_for('login') }}" class="sign-in-button"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+    {% endif %}
+  </div>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flashes">
+    {% for category, message in messages %}
+    <div class="alert {{ 'bg-green-100' if category == 'success' else 'bg-red-100' }}">
+      <i class="fas fa-{{ 'check-circle' if category == 'success' else 'times-circle' }}"></i>
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3>Hệ Thống Quản Lý Thi Đua</h3>
+          <p class="mt-2 text-sm">Hỗ trợ quản lý học sinh và báo cáo thi đua một cách hiệu quả, minh bạch và chuyên nghiệp tại Trường THPT Cái Nước.</p>
+        </div>
+        <div>
+          <h3>Liên Kết Nhanh</h3>
+          <ul class="mt-2 space-y-2">
+            <li><a href="{{ url_for('home') }}">Trang Chủ</a></li>
+            <li><a href="{{ url_for('hoc_tap') }}">Quản Lý Học Tập</a></li>
+            <li><a href="{{ url_for('noi_quy') }}">Quản Lý Nội Quy</a></li>
+            <li><a href="#intro">Giới Thiệu Hệ Thống</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Thông Tin Liên Hệ</h3>
+          <p class="mt-2 text-sm">Email: <a href="mailto:support@quanlylop.edu.vn">support@quanlylop.edu.vn</a></p>
+          <p class="mt-2 text-sm">Hotline: <a href="tel:0123 456 789">0123 456 789</a></p>
+          <p class="mt-2 text-sm">Địa chỉ: 123 Đường Trường Chinh, Thị Trấn Cái Nước, Cà Mau, Việt Nam</p>
+        </div>
+      </div>
+      <div class="mt-8 text-center text-sm">
+        <p>© 2025 Hệ Thống Quản Lý Thi Đua - Trường THPT Cái Nước. Bản quyền thuộc về xAI.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // No additional scripts needed for now
+  </script>
+</body>
+</html>

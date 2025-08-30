@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Phân Công Trực</title>
+    <style>
+        /* Basic styling for the table and form */
+        body { font-family: sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        form { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+        form label { margin-right: 5px; }
+        form input[type="text"],
+        form input[type="number"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        form button { padding: 10px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        form button:hover { background-color: #45a049; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        .clear-button { background-color: #f44336; margin-left: auto; } /* Style for the clear button */
+        .clear-button:hover { background-color: #da190b; }
+        .flash-message { padding: 10px; margin-bottom: 15px; border-radius: 5px; }
+        .flash-message.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .flash-message.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>Phân Công Trực</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <label for="khoi">Khối:</label>
+        <input type="text" id="khoi" name="khoi" value="10" required />
+
+        <label for="so_lop">Số lớp:</label>
+        <input type="number" id="so_lop" name="so_lop" value="20" min="1" required />
+
+        <label for="so_tuan">Số tuần:</label>
+        <input type="number" id="so_tuan" name="so_tuan" value="21" min="1" required />
+
+        <button type="submit">Tạo phân công</button>
+        <button type="button" class="clear-button" onclick="clearAllData()">Xóa toàn bộ</button>
+    </form>
+
+    {% if result %}
+    <h2>Kết quả phân công</h2>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Lớp</th>
+                {% for i in range(result[0]['phan_cong']|length) %}
+                <th>Tuần {{ i + 1 }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in result %}
+            <tr>
+                <td>{{ item.lop }}</td>
+                {% for lop_truc in item.phan_cong %}
+                <td>{{ lop_truc }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <script>
+        function clearAllData() {
+            if (confirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu phân công? Hành động này không thể hoàn tác.')) {
+                fetch('/clear_phancong_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({}) // Send an empty JSON body
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.reload(); // Reload the page to show empty table
+                    } else {
+                        alert('Lỗi: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gửi yêu cầu xóa:', error);
+                    alert('Đã xảy ra lỗi khi cố gắng xóa dữ liệu.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

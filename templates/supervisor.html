@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Supervisor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-container select, .form-container button {
+            padding: 10px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .logout {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .logout a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #d9534f;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .logout a:hover {
+            background-color: #c9302c;
+        }
+        .action-links a {
+            margin-right: 10px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="logout">
+        <a href="{{ url_for('logout') }}">Đăng xuất</a>
+    </div>
+    <div class="container">
+        <h1>HỆ THỐNG QUẢN LÝ</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Trang Chủ</a>
+            {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('admin') }}">Quản Lý Tài Khoản</a>
+                <a href="{{ url_for('tong_ket') }}">Trang Tổng Kết</a>
+                <a href="{{ url_for('tong_ket_tat_ca') }}">Tổng Kết Tất Cả</a>
+                <a href="{{ url_for('set_week') }}">Đặt Tuần</a>
+            {% endif %}
+            {% if session.get('role') in ['user', 'viewer', 'supervisor'] %}
+                <a href="{{ url_for('user') }}">Trang của tôi</a>
+            {% endif %}
+            <a href="{{ url_for('profile') }}">Profile</a>
+
+<!-- Thành: -->
+<a href="{{ url_for('add_hoc_tap') }}">Học Tập</a>
+<a href="{{ url_for('add_noi_quy') }}">Nội Quy</a>
+        </nav>
+
+        <h2>Trang Supervisor</h2>
+        <p><strong>Lớp:</strong> {{ lop }}</p>
+        <p><strong>Tuần:</strong> {{ tuan }}</p>
+        <p><strong>Lớp trực:</strong> {{ lop_truc }}</p>
+
+        <div class="form-container">
+            <form method="POST">
+                <label for="week_select">Chọn tuần:</label>
+                <select name="week_select" id="week_select">
+                    <option value="">-- Chọn tuần --</option>
+                    {% for week in available_export_weeks %}
+                    <option value="{{ week }}" {% if week == tuan %}selected{% endif %}>Tuần {{ week }}</option>
+                    {% endfor %}
+                </select>
+                <label for="lop_truc_select">Chọn lớp trực:</label>
+                <select name="lop_truc_select" id="lop_truc_select">
+                    <option value="">-- Chọn lớp trực --</option>
+                    {% for lop in available_lop_truc %}
+                    <option value="{{ lop }}" {% if lop == lop_truc %}selected{% endif %}>{{ lop }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" name="set_week">Cập nhật</button>
+            </form>
+        </div>
+
+        <h2>Dữ liệu học tập</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tuần</th>
+                    <th>Lớp trực</th>
+                    <th>Giờ A</th>
+                    <th>Giờ B</th>
+                    <th>Giờ C</th>
+                    <th>Giờ D</th>
+                    <th>Đạt kiểu mẫu</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in study_data %}
+                <tr>
+                    <td>{{ data.id }}</td>
+                    <td>{{ data.tuan }}</td>
+                    <td>{{ data.lop_truc }}</td>
+                    <td>{{ data.gio_a }}</td>
+                    <td>{{ data.gio_b }}</td>
+                    <td>{{ data.gio_c }}</td>
+                    <td>{{ data.gio_d }}</td>
+                    <td>{{ data.kieu_mau }}</td>
+                    <td class="action-links">
+                        <a href="{{ url_for('update_study_data_supervisor', data_id=data.id) }}">Sửa</a>
+                        <form method="POST" action="{{ url_for('supervisor') }}" style="display:inline;">
+                            <input type="hidden" name="data_id" value="{{ data.id }}">
+                            <input type="hidden" name="data_type" value="study">
+                            <button type="submit" name="delete_data" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Dữ liệu nội quy</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tuần</th>
+                    <th>Lớp trực</th>
+                    <th>Lớp vi phạm</th>
+                    <th>Nội dung</th>
+                    <th>Điểm trừ</th>
+                    <th>Số lượt</th>
+                    <th>Tên học sinh</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in rules_data %}
+                <tr>
+                    <td>{{ data.id }}</td>
+                    <td>{{ data.tuan }}</td>
+                    <td>{{ data.lop_truc }}</td>
+                    <td>{{ data.lop_vi_pham }}</td>
+                    <td>{{ data.noi_dung }}</td>
+                    <td>{{ data.diem_tru }}</td>
+                    <td>{{ data.so_luot }}</td>
+                    <td>{{ data.ten_hoc_sinh }}</td>
+                    <td class="action-links">
+                        <a href="{{ url_for('update_rules_data_supervisor', data_id=data.id) }}">Sửa</a>
+                        <form method="POST" action="{{ url_for('supervisor') }}" style="display:inline;">
+                            <input type="hidden" name="data_id" value="{{ data.id }}">
+                            <input type="hidden" name="data_type" value="rules">
+                            <button type="submit" name="delete_data" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

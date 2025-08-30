@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Dữ liệu Học Tập</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { padding-top: 20px; background-color: #f8f9fa; }
+        .container { max-width: 600px; }
+        .alert { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mb-4">Thêm Dữ liệu Học Tập</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert_messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('add_hoc_tap_user') }}" method="post">
+            <div class="form-group">
+                <label for="tuan">Tuần:</label>
+                <input type="text" class="form-control" id="tuan" name="tuan" value="{{ tuan }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="lop">Lớp:</label>
+                <input type="text" class="form-control" id="lop" name="lop" value="{{ lop_truc }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="gio_a">Số lượt điểm A (+5 điểm):</label>
+                <input type="number" class="form-control" id="gio_a" name="gio_a" min="0" value="0">
+            </div>
+            <div class="form-group">
+                <label for="gio_b">Số lượt điểm B (-5 điểm):</label>
+                <input type="number" class="form-control" id="gio_b" name="gio_b" min="0" value="0">
+            </div>
+            <div class="form-group">
+                <label for="gio_c">Số lượt điểm C (-15 điểm):</label>
+                <input type="number" class="form-control" id="gio_c" name="gio_c" min="0" value="0">
+            </div>
+            <div class="form-group">
+                <label for="gio_d">Số lượt điểm D (-25 điểm):</label>
+                <input type="number" class="form-control" id="gio_d" name="gio_d" min="0" value="0">
+            </div>
+            <div class="form-group">
+                <label for="dat_kieu_mau">Đạt kiểu mẫu (Yes: +5, No: -10):</label>
+                <select class="form-control" id="dat_kieu_mau" name="dat_kieu_mau">
+                    <option value="Yes">Có</option>
+                    <option value="No">Không</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Thêm Dữ liệu</button>
+            <a href="{{ url_for('user') }}" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

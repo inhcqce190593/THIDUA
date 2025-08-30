@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Dữ Liệu Học Tập - Hệ Thống Quản Lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --border-dark: #cbd5e1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow-md);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .navbar-brand i {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .menu-toggle:hover {
+            background-color: var(--border);
+        }
+
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -280px;
+            background-color: var(--card-bg);
+            color: var(--text);
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .sidebar-logo i {
+            margin-right: 0.75rem;
+            color: var(--primary);
+        }
+
+        .sidebar-close {
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-close:hover {
+            color: var(--text);
+        }
+
+        .nav-links {
+            padding: 1rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .nav-link:hover i, .nav-link.active i {
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            color: var(--text-light);
+            width: 1.25rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            transition: margin-left 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title i {
+            margin-right: 0.75rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control[readonly] {
+            background-color: var(--background);
+            cursor: not-allowed;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-light);
+        }
+
+        .select-control {
+            appearance: none;
+            padding-right: 2.5rem;
+        }
+
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            padding: 2rem;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .close-button:hover {
+            color: var(--text);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-title i {
+            margin-right: 0.75rem;
+        }
+
+        .user-info p {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info strong {
+            color: var(--primary);
+            margin-right: 0.5rem;
+            min-width: 120px;
+        }
+
+        @media (min-width: 1024px) {
+            .sidebar {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 280px;
+            }
+            .menu-toggle {
+                display: none;
+            }
+            .sidebar-close {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .grid-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="flex items-center">
+            <i class="fas fa-bars menu-toggle lg:hidden" id="menuToggle"></i>
+            <div class="navbar-brand">
+                <i class="fas fa-school"></i>
+                <span>HỆ THỐNG QUẢN LÝ</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-school"></i>
+                <span>HỆ THỐNG QUẢN LÝ</span>
+            </div>
+            <i class="fas fa-times sidebar-close lg:hidden" id="sidebarClose"></i>
+        </div>
+        <div class="nav-links">
+            <div class="nav-item">
+                <a href="{{ url_for('home') }}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Trang Chủ</span>
+                </a>
+            </div>
+            {% if session.get('role') == 'admin' %}
+            <div class="nav-item">
+                <a href="{{ url_for('index') }}" class="nav-link">
+                    <i class="fas fa-users-cog"></i>
+                    <span>Quản Lý Tài Khoản</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{{ url_for('tong_ket') }}" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Trang Tổng Kết</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{{ url_for('tong_ket_tat_ca') }}" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tổng Kết Tất Cả</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" id="adminInfoBtnSidebar" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Đặt Tuần</span>
+                </a>
+            </div>
+            {% endif %}
+            {% if session.get('role') in ['user', 'viewer'] %}
+            <div class="nav-item">
+                <a href="{{ url_for('user') }}" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Trang của tôi</span>
+                </a>
+            </div>
+            {% endif %}
+            <div class="nav-item">
+                <a href="#" id="profileBtnSidebar" class="nav-link">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profile</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{{ url_for('hoc_tap') }}" class="nav-link active">
+                    <i class="fas fa-book-open"></i>
+                    <span>Học Tập</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{{ url_for('noi_quy') }}" class="nav-link">
+                    <i class="fas fa-gavel"></i>
+                    <span>Nội Quy</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{{ url_for('logout') }}" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Đăng Xuất</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container fade-in">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-book-open"></i>
+                        <span>Thêm Dữ Liệu Học Tập</span>
+                    </h2>
+                    <a href="{{ url_for('hoc_tap') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lại</span>
+                    </a>
+                </div>
+
+                <form method="POST" action="{{ url_for('add_hoc_tap') }}" class="space-y-6">
+                    <div class="grid-form">
+                        {% if session.role == 'user' %}
+                        <div class="form-group">
+                            <label class="form-label">Tuần:</label>
+                            <input type="text" class="form-control" value="{{ session.get('tuan', 'Chưa gán') }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Lớp Trực:</label>
+                            <input type="text" class="form-control" value="{{ session.get('lop_truc', 'Chưa gán') }}" readonly>
+                        </div>
+                        {% else %}
+                        <div class="form-group select-wrapper">
+                            <label class="form-label">Tuần:</label>
+                            <select name="tuan" class="form-control select-control" required>
+                                <option value="">-- Chọn tuần --</option>
+                                {% for i in range(1, 41) %}
+                                <option value="{{ i }}">Tuần {{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group select-wrapper">
+                            <label class="form-label">Lớp Trực:</label>
+                            <select name="lop_truc" class="form-control select-control" required>
+                                <option value="">-- Chọn lớp trực --</option>
+                                {% for lop in available_lop_truc %}
+                                <option value="{{ lop }}">{{ lop }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label class="form-label">Giờ A:</label>
+                            <input type="number" name="gio_a" class="form-control" min="0" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giờ B:</label>
+                            <input type="number" name="gio_b" class="form-control" min="0" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giờ C:</label>
+                            <input type="number" name="gio_c" class="form-control" min="0" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giờ D:</label>
+                            <input type="number" name="gio_d" class="form-control" min="0" value="0" required>
+                        </div>
+                        <div class="form-group select-wrapper">
+                            <label class="form-label">Đạt kiểu mẫu:</label>
+                            <select name="dat_kieu_mau" class="form-control select-control" required>
+                                <option value="Yes">Có</option>
+                                <option value="No">Không</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-4">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Thêm Dữ Liệu</span>
+                        </button>
+                        <a href="{{ url_for('hoc_tap') }}" class="btn btn-primary">
+                            <i class="fas fa-times"></i>
+                            <span>Hủy bỏ</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeProfileModal">×</span>
+            <h3 class="modal-title">
+                <i class="fas fa-user-circle"></i>
+                <span>Thông Tin Cá Nhân</span>
+            </h3>
+            <div class="user-info">
+                <p>
+                    <strong>Tên người dùng:</strong>
+                    <span>{{ session.get('username', 'N/A') }}</span>
+                </p>
+                <p>
+                    <strong>Vai trò:</strong>
+                    <span>{{ session.get('role', 'N/A') }}</span>
+                </p>
+                <p>
+                    <strong>Lớp:</strong>
+                    <span>{{ session.get('lop', 'Chưa gán') }}</span>
+                </p>
+                <p>
+                    <strong>Tuần hiện tại:</strong>
+                    <span>Tuần {{ session.get('tuan', 'Chưa gán') }}</span>
+                </p>
+                <p>
+                    <strong>Lớp trực:</strong>
+                    <span>{{ session.get('lop_truc', 'Chưa gán') }}</span>
+                </p>
+                <div class="mt-6 text-center">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-edit"></i>
+                        <span>Chỉnh sửa Profile</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        sidebarClose.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && !sidebar.contains(e.target) && 
+                !menuToggle.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Profile Modal handling
+        const profileModal = document.getElementById('profileModal');
+        const profileBtn = document.getElementById('profileBtnSidebar');
+        const profileSpan = document.getElementById('closeProfileModal');
+
+        if (profileBtn) {
+            profileBtn.onclick = (e) => {
+                e.preventDefault();
+                profileModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            };
+        }
+
+        if (profileSpan) {
+            profileSpan.onclick = () => {
+                profileModal.style.display = 'none';
+                document.body.style.overflow = '';
+            };
+        }
+
+        window.onclick = (e) => {
+            if (e.target == profileModal) {
+                profileModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        };
+    </script>
+</body>
+</html>

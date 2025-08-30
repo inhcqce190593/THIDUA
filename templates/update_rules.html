@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chỉnh sửa nội quy</title>
+  <link rel="stylesheet" href="https://cdn.tailwindcss.com">
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <div class="max-w-xl mx-auto bg-white p-6 mt-10 rounded shadow">
+    <h2 class="text-2xl font-semibold text-blue-600 mb-4">Chỉnh sửa nội quy vi phạm</h2>
+    <form method="POST">
+      <label class="block mb-2">Nội dung vi phạm:</label>
+      <input type="text" name="noi_dung_vi_pham" value="{{ data.noi_dung_vi_pham }}" class="w-full p-2 border rounded mb-4" required>
+
+      <label class="block mb-2">Điểm trừ:</label>
+      <input type="number" name="diem_tru" value="{{ data.diem_tru }}" class="w-full p-2 border rounded mb-4" required>
+
+      <label class="block mb-2">Số lượt vi phạm:</label>
+      <input type="number" name="so_luot_vi_pham" value="{{ data.so_luot_vi_pham }}" class="w-full p-2 border rounded mb-4" required>
+
+      <label class="block mb-2">Tên học sinh vi phạm:</label>
+      <input type="text" name="ten_hoc_sinh_vi_pham" value="{{ data.ten_hoc_sinh_vi_pham }}" class="w-full p-2 border rounded mb-4" required>
+
+      <div class="flex justify-between mt-6">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Cập nhật</button>
+        <a href="{{ url_for('user') }}" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded">Hủy</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

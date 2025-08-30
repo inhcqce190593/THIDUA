@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ - Hệ Thống Quản Lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --background: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #111827;
+            --border: #d1d5db;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        html {
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -280px;
+            background-color: var(--card-bg);
+            color: var(--text);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sidebar .logo i {
+            margin-right: 0.75rem;
+            font-size: 1.75rem;
+        }
+
+        .sidebar .nav-links {
+            padding: 1rem;
+        }
+
+        .sidebar .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar .nav-links a:hover {
+            background-color: var(--secondary);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-links a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .sidebar .nav-links a i {
+            margin-right: 0.75rem;
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .menu-toggle:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 5rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            font-weight: 400;
+            opacity: 0.95;
+            margin: 0 auto 2rem;
+            max-width: 700px;
+        }
+
+        .hero .cta-button {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.875rem 2.5rem;
+            border-radius: 3rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero .cta-button:hover {
+            background-color: #d97706;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .card h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card h2 i {
+            margin-right: 0.75rem;
+            color: var(--accent);
+        }
+
+        /* Admin Actions */
+        .admin-actions .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .admin-actions a {
+            background-color: var(--card-bg);
+            color: var(--primary);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .admin-actions a:hover {
+            background-color: var(--secondary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-actions a i {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+        }
+
+        /* Introduction Section */
+        .intro-section {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .intro-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .intro-section h2 i {
+            margin-right: 0.75rem;
+            color: var(--accent);
+        }
+
+        .intro-section p {
+            font-size: 1.1rem;
+            color: var(--text);
+            max-width: 1000px;
+            margin: 0 auto 1.5rem;
+            text-align: justify;
+            line-height: 1.8;
+            flex: 1;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex: 1;
+        }
+
+        .feature-card {
+            background-color: #f9fafb;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background-color: #ffffff;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            background-color: rgba(59, 130, 246, 0.1);
+            width: 4rem;
+            height: 4rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            color: var(--text);
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-block {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Flash Messages */
+        .flashes {
+            margin-bottom: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            animation: slideIn 0.5s ease;
+        }
+
+        .alert i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .alert-success {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            animation: zoomIn 0.3s ease;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content h3 i {
+            margin-right: 0.75rem;
+            color: var(--accent);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.75rem;
+            color: #6b7280;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
+        }
+
+        .close-button:hover {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 3rem 0;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+
+        .footer p {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-links a i {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (min-width: 1024px) {
+            .navbar .menu-toggle {
+                display: none;
+            }
+            .sidebar {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 280px;
+                width: calc(100% - 280px);
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .main-content {
+                margin-left: 0 !important;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .intro-section {
+                padding: 1.5rem;
+            }
+            .intro-section h2 {
+                font-size: 1.75rem;
+            }
+            .feature-card {
+                padding: 1.5rem;
+            }
+            .navbar {
+                padding: 1rem;
+            }
+        }
+
+        /* Utility classes */
+        .ml-3 {
+            margin-left: 0.75rem;
+        }
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="flex items-center">
+            <i class="fas fa-bars menu-toggle" id="menuToggle"></i>
+            <div class="navbar-brand ml-3">
+                <i class="fas fa-school"></i>
+                <span></span>
+            </div>
+        </div>
+        {% if is_public %}
+        <a href="{{ url_for('login') }}" class="btn btn-primary"><i class="fas fa-sign-in-alt mr-2"></i> Đăng nhập</a>
+        {% endif %}
+    </nav>
+
+    <!-- Sidebar -->
+    {% if not is_public %}
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-school"></i>
+            <span>Hệ Thống Quản Lý</span>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}" class="{{ 'active' if request.path == url_for('home') }}">
+                <i class="fas fa-home"></i> Trang Chủ
+            </a>
+            {% if session.get('role') == 'admin' %}
+            <a href="{{ url_for('index') }}" class="{{ 'active' if request.path == url_for('index') }}">
+                <i class="fas fa-users-cog"></i> Quản Lý Tài Khoản
+            </a>
+            <a href="{{ url_for('tong_ket') }}" class="{{ 'active' if request.path == url_for('tong_ket') }}">
+                <i class="fas fa-chart-bar"></i> Trang Tổng Kết
+            </a>
+            <a href="{{ url_for('tong_ket_tat_ca') }}" class="{{ 'active' if request.path == url_for('tong_ket_tat_ca') }}">
+                <i class="fas fa-chart-line"></i> Tổng Kết Tất Cả
+            </a>
+            {% endif %}
+            {% if session.get('role') in ['user', 'viewer'] %}
+            <a href="{{ url_for('user') }}" class="{{ 'active' if request.path == url_for('user') }}">
+                <i class="fas fa-user"></i> Trang của tôi
+            </a>
+            {% endif %}
+            <a href="#" id="profileBtnSidebar" class="{{ 'active' if request.path == url_for('home') }}">
+                <i class="fas fa-user-circle"></i> Profile
+            </a>
+            <a href="{{ url_for('hoc_tap') }}" class="{{ 'active' if request.path == url_for('hoc_tap') }}">
+                <i class="fas fa-book-open"></i> Học Tập
+            </a>
+            <a href="{{ url_for('noi_quy') }}" class="{{ 'active' if request.path == url_for('noi_quy') }}">
+                <i class="fas fa-gavel"></i> Nội Quy
+            </a>
+            <a href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Chào mừng đến với Hệ Thống Quản Lý Thi Đua</h1>
+                <p>Khám phá nền tảng trực tuyến tiên tiến giúp quản lý hiệu quả các hoạt động thi đua, học tập và nề nếp của học sinh tại Trường THPT Cái Nước.</p>
+                <a href="#intro" class="cta-button"><i class="fas fa-rocket mr-2"></i> Khám phá ngay</a>
+            </div>
+        </div>
+
+        <!-- Container -->
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <i class="fas fa-{{ 'check-circle' if category == 'success' else 'times-circle' if category == 'error' else 'info-circle' }}"></i>
+                    {{ message | safe }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {% if session.get('role') == 'admin' and not is_public %}
+            <div class="card admin-actions">
+                <div class="card-header">
+                    <h2><i class="fas fa-cogs"></i> Các Hành Động Quản Trị</h2>
+                </div>
+                <div class="grid">
+                    <a href="{{ url_for('tong_ket_tat_ca') }}" class="button">
+                        <i class="fas fa-users"></i> Quản Lý Dữ Liệu Học Sinh
+                    </a>
+                    <a href="{{ url_for('index') }}" class="button">
+                        <i class="fas fa-user-plus"></i> Quản Lý Tài Khoản
+                    </a>
+                    <a href="{{ url_for('tong_ket') }}" class="button">
+                        <i class="fas fa-calculator"></i> Tổng Kết Điểm
+                    </a>
+                    <a href="{{ url_for('tong_ket_tat_ca') }}" class="button">
+                        <i class="fas fa-chart-line"></i> Tổng Kết Tất Cả
+                    </a>
+                    <a href="{{ url_for('phancong_index') }}" class="button">
+                        <i class="fas fa-tasks"></i> Phân Công Nhiệm Vụ
+                    </a>
+                </div>
+            </div>
+
+            <div id="adminInfoModal" class="modal">
+                <div class="modal-content">
+                    <button class="close-button">×</button>
+                    <h3><i class="fas fa-calendar-alt"></i> Cài Đặt Tuần Hiện Tại</h3>
+                    <form action="{{ url_for('home') }}" method="POST">
+                        <div class="form-group">
+                            <label for="week_select">Chọn tuần hiện tại:</label>
+                            <select id="week_select" name="week_select" class="form-control">
+                                {% for i in range(1, 41) %}
+                                <option value="{{ i }}" {% if i == tuan|int %}selected{% endif %}>Tuần {{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" name="set_week" class="btn btn-primary btn-block">
+                            <i class="fas fa-calendar-check mr-2"></i> Xác Nhận Tuần
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Introduction Section -->
+            <div class="intro-section" id="intro">
+                <h2><i class="fas fa-info-circle"></i> Giới Thiệu Về Hệ Thống Quản Lý Thi Đua</h2>
+                <p>Hệ thống Quản lý Thi đua trực tuyến của Trường THPT Cái Nước là một giải pháp công nghệ tiên tiến, được thiết kế nhằm nâng cao hiệu quả quản lý và theo dõi các hoạt động thi đua của học sinh. Với mục tiêu tạo ra một môi trường giáo dục minh bạch, công bằng và thúc đẩy tinh thần học tập, hệ thống cho phép giáo viên, cán bộ phụ trách và học sinh dễ dàng cập nhật, theo dõi và đánh giá các chỉ số quan trọng như vi phạm nội quy, giờ học tập, nề nếp lớp học, cũng như kết quả thi đua theo từng tuần. Đây là công cụ hỗ trợ đắc lực trong việc xây dựng kỷ luật, khuyến khích sự cạnh tranh lành mạnh và phát triển toàn diện cho học sinh, đồng thời cung cấp báo cáo chi tiết để phục vụ công tác quản lý giáo dục.</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-search"></i>
+                        <h3>Theo Dõi Kết Quả Thi Đua</h3>
+                        <p>Cập nhật liên tục kết quả thi đua của từng lớp theo từng tuần, giúp giáo viên và học sinh nắm bắt rõ ràng tiến độ và thành tích học tập.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-edit"></i>
+                        <h3>Nhập Liệu Nhanh Chóng</h3>
+                        <p>Cho phép cán bộ nhập dữ liệu vi phạm nội quy, giờ học tập và đánh giá kiểu mẫu một cách nhanh chóng, với giao diện thân thiện.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-calculator"></i>
+                        <h3>Tính Điểm Tự Động</h3>
+                        <p>Hệ thống tự động tính toán tổng điểm vi phạm, điểm thưởng kiểu mẫu và điểm học tập, đảm bảo độ chính xác cao.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-trophy"></i>
+                        <h3>Xếp Hạng Minh Bạch</h3>
+                        <p>Bảng xếp hạng được cập nhật hàng tuần, giúp các lớp nhận diện vị trí của mình, tạo động lực thi đua.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-file-export"></i>
+                        <h3>Xuất Báo Cáo Chi Tiết</h3>
+                        <p>Hỗ trợ xuất dữ liệu dưới dạng file Excel hoặc PDF, phục vụ cho việc tổng kết, in ấn và phân tích sâu hơn.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-user-shield"></i>
+                        <h3>Quản Lý Tài Khoản An Toàn</h3>
+                        <p>Mỗi người dùng được cấp tài khoản riêng, đảm bảo tính bảo mật và phân quyền rõ ràng trong hệ thống.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-globe"></i>
+                        <h3>Truy Cập Linh Hoạt</h3>
+                        <p>Giao diện được tối ưu hóa cho cả máy tính và điện thoại, cho phép người dùng truy cập mọi lúc, mọi nơi.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-bell"></i>
+                        <h3>Thông Báo Thường Xuyên</h3>
+                        <p>Cung cấp thông báo kịp thời qua hệ thống, giúp người dùng nắm bắt các cập nhật quan trọng.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-grid">
+                    <div>
+                        <h3>Hệ Thống Quản Lý Thi Đua</h3>
+                        <p>Hỗ trợ quản lý học sinh và báo cáo thi đua một cách hiệu quả, minh bạch và chuyên nghiệp tại Trường THPT Cái Nước.</p>
+                    </div>
+                    <div>
+                        <h3>Liên Kết Nhanh</h3>
+                        <ul class="footer-links">
+                            <li><a href="{{ url_for('home_public') }}"><i class="fas fa-chevron-right"></i> Trang Chủ</a></li>
+                            <li><a href="{{ url_for('hoc_tap') }}"><i class="fas fa-chevron-right"></i> Quản Lý Học Tập</a></li>
+                            <li><a href="{{ url_for('noi_quy') }}"><i class="fas fa-chevron-right"></i> Quản Lý Nội Quy</a></li>
+                            <li><a href="#intro"><i class="fas fa-chevron-right"></i> Giới Thiệu Hệ Thống</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Thông Tin Liên Hệ</h3>
+                        <ul class="footer-links">
+                            <li><a href="mailto:support@quanlylop.edu.vn"><i class="fas fa-envelope"></i> support@quanlylop.edu.vn</a></li>
+                            <li><a href="tel:0123456789"><i class="fas fa-phone"></i> 032 678 1606</a></li>
+                            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Đường Hồ Thị Kỷ, Khóm 1, TT Cái Nước, huyện Cái Nước, Tỉnh Cà Mau</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2025 Hệ Thống Quản Lý Thi Đua - Trường THPT Cái Nước. Bản quyền thuộc về THPT Cái Nước.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Profile Modal -->
+    {% if not is_public %}
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeProfileModal">×</span>
+            <h3 class="modal-title">
+                <i class="fas fa-user-circle"></i>
+                <span>Thông Tin Cá Nhân</span>
+            </h3>
+            <div class="user-info">
+                <p>
+                    <strong>Tên người dùng:</strong>
+                    <span>{{ session.get('username', 'N/A') }}</span>
+                </p>
+                <p>
+                    <strong>Vai trò:</strong>
+                    <span>{{ session.get('role', 'N/A') }}</span>
+                </p>
+                <p>
+                    <strong>Lớp:</strong>
+                    <span>{{ session.get('lop', 'Chưa gán') }}</span>
+                </p>
+                <p>
+                    <strong>Tuần hiện tại:</strong>
+                    <span>Tuần {{ session.get('tuan', 'Chưa gán') }}</span>
+                </p>
+                <p>
+                    <strong>Lớp trực:</strong>
+                    <span>{{ session.get('lop_truc', 'Chưa gán') }}</span>
+                </p>
+                <div class="mt-6 text-center">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-edit mr-2"></i>
+                        <span>Chỉnh sửa Profile</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const mainContent = document.getElementById('mainContent');
+        
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && sidebar && !sidebar.contains(e.target) && menuToggle && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Modal handling
+        const adminModal = document.getElementById('adminInfoModal');
+        const adminBtn = document.getElementById('adminInfoBtnSidebar');
+        const adminClose = adminModal?.querySelector('.close-button');
+
+        if (adminBtn && adminModal) {
+            adminBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                adminModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        if (adminClose) {
+            adminClose.addEventListener('click', () => {
+                adminModal.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Close modal when clicking outside
+        if (adminModal) {
+            window.addEventListener('click', (e) => {
+                if (e.target === adminModal) {
+                    adminModal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        // Profile Modal handling
+        const profileModal = document.getElementById('profileModal');
+        const profileBtn = document.getElementById('profileBtnSidebar');
+        const profileSpan = document.getElementById('closeProfileModal');
+
+        if (profileBtn && profileModal) {
+            profileBtn.onclick = (e) => {
+                e.preventDefault();
+                profileModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            };
+        }
+
+        if (profileSpan && profileModal) {
+            profileSpan.onclick = () => {
+                profileModal.style.display = 'none';
+                document.body.style.overflow = '';
+            };
+        }
+
+        if (profileModal) {
+            window.onclick = (e) => {
+                if (e.target == profileModal) {
+                    profileModal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            };
+        }
+
+        // Adjust layout on resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024 && sidebar) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Initialize layout based on screen size
+        function initLayout() {
+            if (window.innerWidth >= 1024 && sidebar) {
+                sidebar.classList.remove('active');
+            }
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', initLayout);
+    </script>
+</body>
+</html>

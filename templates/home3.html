@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Quản Trị & Quản Lý Tài Khoản</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50; /* Green (from first snippet, adjusted for overall theme) */
+            --secondary-color: #2196F3; /* Blue (from first snippet, adjusted for overall theme) */
+            --accent-color: #FFC107; /* Yellow */
+            --danger-color: #f44336; /* Red (from first snippet) */
+            --success-color: #28A745; /* Green for success messages/buttons */
+            --info-color: #6C757D; /* Grey */
+            --background-start: #e0f7fa; /* Light Cyan */
+            --background-end: #b2ebf2; /* Pale Blue */
+            --card-bg: #ffffff; /* White */
+            --text-color: #333;
+            --light-bg: #f4f7f6;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --button-hover: #388E3C; /* Darker green */
+            --delete-button-hover: #d32f2f; /* Darker red */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            max-width: 1300px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            box-sizing: border-box;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-container, .action-container {
+            flex: 1;
+            min-width: 320px;
+            max-width: 450px;
+        }
+
+        .data-table-container {
+            width: 95%;
+            max-width: 1200px;
+            margin-top: 25px;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 20px; /* Adjusted for overall flow */
+            margin-bottom: 25px;
+            font-weight: 500;
+            font-size: 1.8em;
+            text-align: center; /* Centered for management sections */
+        }
+
+        .info {
+            background: #e8f5e9; /* Light green background */
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .info p {
+            font-size: 1.1em;
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .info p strong {
+            color: var(--primary-color);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        ul li {
+            background: #e3f2fd; /* Light blue background */
+            border-radius: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        ul li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        ul li a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: bold;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.2s ease;
+        }
+
+        ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 400;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+            color: var(--text-color);
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        button, input[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            width: 100%;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        button:active, input[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .button-group button,
+        .button-group a.button {
+            flex: 1;
+        }
+
+        .button.reset-filter {
+            background-color: var(--info-color);
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+            margin-left: 0; /* Adjusted for column layout on small screens */
+            padding: 12px 25px;
+            border-radius: 6px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%; /* Ensure it takes full width on small screens */
+            box-sizing: border-box;
+        }
+
+        .button.reset-filter:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        /* Flash messages */
+        .flash-message {
+            margin-top: -10px;
+            margin-bottom: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            word-wrap: break-word;
+            font-weight: 500;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Table styles (combined and adjusted) */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            font-size: 0.95em; /* Slightly larger font for readability */
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        td {
+            background-color: var(--card-bg);
+            transition: background-color 0.2s ease;
+        }
+
+        td:hover {
+            background-color: #e0e0e030;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+        }
+
+        .action-buttons form {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .action-buttons button, .action-buttons a {
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: inline-flex; /* Ensure flex behavior for centering icon/text */
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-buttons button[name="delete_data"], .action-buttons .delete-btn {
+            background-color: var(--danger-color);
+        }
+
+        .action-buttons button[name="delete_data"]:hover, .action-buttons .delete-btn:hover {
+            background-color: var(--delete-button-hover);
+        }
+
+        .action-buttons button[name="update_data"], .action-buttons .edit-btn {
+            background-color: var(--accent-color); /* Yellow for edit */
+            color: var(--text-color); /* Darker text for yellow background */
+        }
+
+        .action-buttons button[name="update_data"]:hover, .action-buttons .edit-btn:hover {
+            background-color: #FFD54F; /* Lighter yellow on hover */
+        }
+
+
+        .logout {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .logout a {
+            color: var(--danger-color);
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 10px 20px;
+            border: 2px solid var(--danger-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .logout a:hover {
+            background-color: var(--danger-color);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        /* Modal / Pop-up styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 100; /* Sit on top, above other content */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 80%; /* Could be more specific based on content */
+            max-width: 500px;
+            position: relative;
+            animation: slideInTop 0.5s ease-out;
+        }
+
+        @keyframes slideInTop {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .profile-info p {
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .profile-info p strong {
+            color: var(--secondary-color);
+            margin-right: 5px;
+        }
+
+        /* Specific section styles for admin panel */
+        .set-all-tuan-section button {
+            background-color: var(--secondary-color); /* Light blue from second snippet */
+        }
+        .set-all-tuan-section button:hover {
+            background-color: #409dc4;
+        }
+
+        .filter-section form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .filter-section label {
+            margin-bottom: 0;
+            flex-shrink: 0;
+        }
+
+        .filter-section select {
+            width: auto;
+            flex-grow: 1;
+            margin-bottom: 0;
+        }
+
+        .filter-section button {
+            width: auto;
+            padding: 10px 20px;
+            margin-top: 0;
+            background-color: var(--success-color);
+        }
+
+        .filter-section button:hover {
+            background-color: #218838;
+        }
+
+        .update-lop-truc-section button {
+            background-color: var(--danger-color);
+        }
+        .update-lop-truc-section button:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            ul {
+                grid-template-columns: 1fr;
+            }
+
+            table, th, td {
+                display: block;
+            }
+
+            table thead {
+                display: none; /* Hide table headers on small screens */
+            }
+
+            table tr {
+                margin-bottom: 15px;
+                display: block;
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            table td {
+                text-align: right;
+                position: relative;
+                padding-left: 50%;
+                border: none;
+            }
+
+            table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 15px;
+                font-weight: bold;
+                text-align: left;
+                color: var(--secondary-color);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+
+            .main-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .form-container, .action-container {
+                width: 95%;
+                max-width: none;
+            }
+            .filter-section form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-section select,
+            .filter-section button,
+            .button.reset-filter {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if 'username' in session %}
+    <div class="container" style="max-width: 1200px;">
+        <h1>Chào {{ session['username'] }} 👋</h1>
+        <div class="info">
+            <p><strong>Lớp trực:</strong> {{ lop }}</p>
+            <p><strong>Tuần:</strong> {{ tuan }}</p>
+        </div>
+
+        <h2>🔧 Chức năng</h2>
+        <ul>
+            {% if session['role'] == 'admin' %}
+                <li><a href="#" id="adminInfoBtn"><i class="fas fa-user-cog"></i> Thông tin tài khoản</a></li>
+                <li><a href="{{ url_for('tong_ket') }}"><i class="fas fa-chart-bar"></i> Tổng kết</a></li>
+            {% endif %}
+
+            {% if session['role'] in ['admin', 'user'] %}
+                <li><a href="{{ url_for('hoc_tap') }}"><i class="fas fa-book-open"></i> Học tập</a></li>
+                <li><a href="{{ url_for('noi_quy') }}"><i class="fas fa-scroll"></i> Nội quy</a></li>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tasks"></i> Phân công </a></li>
+                <li><a href="/add_hoc_tap"><i class="fas fa-plus-square"></i> Nhập Học Tập</a></li>
+                <li><a href="/add_noi_quy"><i class="fas fa-plus-square"></i> Nhập Nội Quy</a></li>
+                <li><a href="/view_schedule"><i class="fas fa-calendar-alt"></i> Xem phân công</a></li>
+            {% endif %}
+
+            {% if session['role'] == 'user' %}
+                <li><a href="{{ url_for('user') }}"><i class="fas fa-user-circle"></i> Trang người dùng</a></li>
+            {% elif session['role'] == 'viewer' %}
+                <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i> Trang xem</a></li>
+            {% endif %}
+        </ul>
+
+        <div class="logout">
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+        </div>
+
+        <div class="section">
+            <h2>📘 Dữ Liệu Học Tập</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tuần</th>
+                        <th>Lớp</th>
+                        <th>Giờ A</th>
+                        <th>Giờ B</th>
+                        <th>Giờ C</th>
+                        <th>Giờ D</th>
+                        <th>Đạt kiểu mẫu</th>
+                        <th>Tổng điểm</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in study_data %}
+                    <tr>
+                        <td data-label="Tuần">{{ item.tuan }}</td>
+                        <td data-label="Lớp">{{ item.lop }}</td>
+                        <td data-label="Giờ A">{{ item.gio_a }}</td>
+                        <td data-label="Giờ B">{{ item.gio_b }}</td>
+                        <td data-label="Giờ C">{{ item.gio_c }}</td>
+                        <td data-label="Giờ D">{{ item.gio_d }}</td>
+                        <td data-label="Đạt kiểu mẫu">{{ item.dat_kieu_mau }}</td>
+                        <td data-label="Tổng điểm">{{ item.tong_diem }}</td>
+                        <td data-label="Thao tác" class="action-buttons">
+                            <form method="POST">
+                                <input type="hidden" name="data_id" value="{{ item.id }}">
+                                <input type="hidden" name="data_type" value="study">
+                                <button type="submit" name="delete_data">🗑 Xóa</button>
+                            </form>
+                            <form method="POST">
+                                <input type="hidden" name="data_id" value="{{ item.id }}">
+                                <input type="hidden" name="data_type" value="study">
+                                <button type="submit" name="update_data">✏️ Cập nhật</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>📒 Dữ Liệu Nội Quy</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tuần</th>
+                        <th>Lớp</th>
+                        <th>Nội dung vi phạm</th>
+                        <th>Đánh giá</th>
+                        <th>Số lượt vi phạm</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in rules_data %}
+                    <tr>
+                        <td data-label="Tuần">{{ item.tuan }}</td>
+                        <td data-label="Lớp">{{ item.lop }}</td>
+                        <td data-label="Nội dung vi phạm">{{ item.noi_dung_vi_pham }}</td>
+                        <td data-label="Đánh giá">{{ item.danh_gia }}</td>
+                        <td data-label="Số lượt vi phạm">{{ item.so_luot_vi_pham }}</td>
+                        <td data-label="Thao tác" class="action-buttons">
+                            <form method="POST">
+                                <input type="hidden" name="data_id" value="{{ item.id }}">
+                                <input type="hidden" name="data_type" value="rules">
+                                <button type="submit" name="delete_data">🗑 Xóa</button>
+                            </form>
+                            <form method="POST">
+                                <input type="hidden" name="data_id" value="{{ item.id }}">
+                                <input type="hidden" name="data_type" value="rules">
+                                <button type="submit" name="update_data">✏️ Cập nhật</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+        <p style="text-align: center; font-size: 1.2em; margin-top: 50px;">Vui lòng <a href="{{ url_for('login') }}" style="color: var(--secondary-color); text-decoration: none; font-weight: bold;">đăng nhập</a> để truy cập nội dung.</p>
+    {% endif %}
+
+    <div class="main-wrapper" style="margin-top: 50px;"> <div class="container form-container">
+            <h2>{% if account_to_edit %}Chỉnh Sửa Tài Khoản{% else %}Thêm Tài Khoản Mới{% endif %}</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <p class="flash-message {{ category }}">{{ message | safe }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="{% if account_to_edit %}{{ url_for('edit_account', account_id=account_to_edit.id) }}{% else %}{{ url_for('add_account') }}{% endif %}" method="post">
+                {% if account_to_edit %}
+                    <input type="hidden" name="id" value="{{ account_to_edit.id }}">
+                {% else %}
+                    <input type="hidden" name="current_tuan_for_add" value="{{ selected_tuan if selected_tuan else 1 }}">
+                {% endif %}
+
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ account_to_edit.Name if account_to_edit else '' }}" required>
+
+                <label for="username">User Name:</label>
+                <input type="text" id="username" name="username" value="{{ account_to_edit.username if account_to_edit else '' }}" required>
+
+                <label for="lop">Lớp:</label>
+                <input type="text" id="lop" name="lop" value="{{ account_to_edit.lop if account_to_edit else '' }}" required>
+
+                <label for="Capquanli">Cấp quản lí:</label>
+                <select id="Capquanli" name="Capquanli" required>
+                    <option value="">-- Chọn cấp quản lí --</option>
+                    <option value="user" {% if account_to_edit and account_to_edit.Capquanli == 'user' %}selected{% endif %}>user</option>
+                    <option value="admin" {% if account_to_edit and account_to_edit.Capquanli == 'admin' %}selected{% endif %}>admin</option>
+                </select>
+
+                {% if account_to_edit %}
+                <label for="lop_truc">Lớp Trực:</label>
+                <input type="text" id="lop_truc" name="lop_truc" value="{{ account_to_edit.lop_truc if account_to_edit else '' }}">
+                {% endif %}
+
+                {% if account_to_edit %}
+                <label for="tuan_edit">Tuần:</label>
+                <select id="tuan_edit" name="tuan_edit" required>
+                    {% for i in range(1, 41) %}
+                        <option value="{{ i }}" {% if account_to_edit and account_to_edit.tuan == i %}selected{% endif %}>Tuần {{ i }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+
+                <input type="submit" value="{% if account_to_edit %}Cập Nhật Tài Khoản{% else %}Thêm Tài Khoản{% endif %}">
+
+                {% if account_to_edit %}
+                    <a href="{{ url_for('index', tuan=selected_tuan if selected_tuan else '') }}" class="button reset-filter" style="display: block; text-align: center; margin-top: 10px;">Hủy bỏ chỉnh sửa</a>
+                {% endif %}
+            </form>
+        </div>
+
+        <div class="action-container">
+            <div class="container set-all-tuan-section">
+                <h2>Cài Đặt Tuần Toàn Bảng</h2>
+                <form action="{{ url_for('set_all_tuan') }}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật cột TUẦN của TẤT CẢ các tài khoản thành tuần đã chọn không? Hành động này không thể hoàn tác!');">
+                    <label for="new_tuan_value">Chọn Tuần:</label>
+                    <select id="new_tuan_value" name="new_tuan_value">
+                        {% for i in range(1, 41) %}
+                            <option value="{{ i }}" {% if selected_tuan == i %}selected{% endif %}>Tuần {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Cài Đặt Tuần Toàn Bảng</button>
+                </form>
+            </div>
+
+            <div class="container update-lop-truc-section" style="margin-top: 25px;">
+                <h2>Cập Nhật Lớp Trực</h2>
+                <form action="{{ url_for('update_lop_truc_route') }}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật toàn bộ cột LỚP TRỰC dựa trên bảng PHÂN CÔNG TRỰC không? Hành động này sẽ ghi đè dữ liệu hiện tại!');">
+                    <button type="submit">Cập Nhật Lớp Trực</button>
+                </form>
+            </div>
+
+            <div class="container filter-section" style="margin-top: 25px;">
+                <h2>Lọc Danh Sách Theo Tuần</h2>
+                <form action="{{ url_for('index') }}" method="get">
+                    <label for="tuan_filter">Hiển thị Tuần:</label>
+                    <select id="tuan_filter" name="tuan">
+                        <option value="">Tất cả các tuần</option>
+                        {% for i in range(1, 41) %}
+                            <option value="{{ i }}" {% if selected_tuan == i %}selected{% endif %}>Tuần {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Lọc Bảng</button>
+                    {% if selected_tuan %}
+                        <a href="{{ url_for('index') }}" class="button reset-filter">Hiện tất cả</a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-table-container">
+        <h2>Danh Sách Tài Khoản {% if selected_tuan %} (Đang hiển thị Tuần {{ selected_tuan }}) {% endif %}</h2>
+        {% if accounts %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>User Name</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                        <th>Lớp</th>
+                        <th>Tuần</th>
+                        <th>Cấp quản lí</th>
+                        <th>Lớp Trực</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in accounts %}
+                    <tr>
+                        <td>{{ account.id }}</td>
+                        <td>{{ account.Name }}</td>
+                        <td>{{ account.username }}</td>
+                        <td>{{ account.password }}</td>
+                        <td>{{ account.role }}</td>
+                        <td>{{ account.lop }}</td>
+                        <td>{{ account.tuan }}</td>
+                        <td>{{ account.Capquanli }}</td>
+                        <td>{{ account.lop_truc }}</td>
+                        <td class="action-buttons">
+                            <a href="{{ url_for('edit_account', account_id=account.id) }}" class="edit-btn">✏️ Sửa</a>
+                            <a href="{{ url_for('delete_account', account_id=account.id) }}" class="delete-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">🗑️ Xóa</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align: center; margin-top: 20px;">Không có tài khoản nào được tìm thấy.</p>
+        {% endif %}
+    </div>
+
+    <div id="adminInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Thông tin tài khoản</h2>
+            <div class="profile-info">
+                <p><strong>Tên người dùng:</strong> {{ session['username'] }}</p>
+                <p><strong>Quyền hạn:</strong> {{ session['role'] }}</p>
+            </div>
+            {% if session['role'] == 'admin' %}
+                <p style="margin-top: 20px; font-style: italic; color: #666;">
+                    Bạn có thể quản lý người dùng và các thiết lập khác tại <a href="{{ url_for('admin') }}" style="color: var(--secondary-color); font-weight: bold;">trang quản trị</a>.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById("adminInfoModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("adminInfoBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close-button")[0];
+
+        // When the user clicks the button, open the modal
+        if (btn) {
+            btn.onclick = function(event) {
+                event.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ 'a'
+                modal.style.display = "flex"; // Changed to flex for centering
+            }
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        if (span) {
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

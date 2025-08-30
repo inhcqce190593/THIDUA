@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phân Công Trực Chéo Linh Hoạt</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+    h2 { margin-top: 30px; }
+    input, textarea, button { margin: 10px 0; padding: 8px; width: 100%; }
+    textarea { height: 100px; }
+  </style>
+</head>
+<body>
+  <h1>Phân Công Trực Chéo Linh Hoạt</h1>
+
+  <label for="weeks">Nhập số tuần:</label>
+  <input type="number" id="weeks" value="34" min="1">
+
+  <label for="inputData">Nhập thông tin khối theo định dạng: "Khối,Số lớp" (mỗi dòng một khối):</label>
+  <textarea id="inputData" placeholder="Ví dụ:\n10,18\n11,19\n12,17"></textarea>
+
+  <button onclick="generateSchedule()">Tạo phân công</button>
+
+  <div id="content"></div>
+
+  <script>
+    function generateChainedSchedule(classes, weeks) {
+      let schedule = [];
+      for (let i = 0; i < weeks; i++) {
+        let from = classes[i % classes.length].trim();
+        let to = classes[(i + 1) % classes.length].trim();
+        schedule.push({ from, to });
+      }
+      return schedule;
+    }
+
+    function renderTable(khoi, data) {
+      let html = `<h2>Khối ${khoi}</h2><table><tr><th>Tuần</th><th>Lớp trực</th><th>Lớp được trực</th></tr>`;
+      data.forEach((row, idx) => {
+        html += `<tr><td>Tuần ${idx + 1}</td><td>${row.from}</td><td>${row.to}</td></tr>`;
+      });
+      html += '</table>';
+      return html;
+    }
+
+    function generateSchedule() {
+      const content = document.getElementById('content');
+      const inputData = document.getElementById('inputData').value.trim();
+      const weeks = parseInt(document.getElementById('weeks').value);
+
+      if (!inputData || isNaN(weeks) || weeks <= 0) {
+        content.innerHTML = '<p style="color:red">Vui lòng nhập đúng định dạng lớp và số tuần.</p>';
+        return;
+      }
+
+      const lines = inputData.split("\n");
+      content.innerHTML = '';
+      lines.forEach((line) => {
+        const [khoi, soLop] = line.split(',').map(x => x.trim());
+        const lopSo = parseInt(soLop);
+        if (!khoi || isNaN(lopSo) || lopSo < 2) return;
+        const classes = Array.from({ length: lopSo }, (_, i) => `${khoi}A${i + 1}`);
+        const schedule = generateChainedSchedule(classes, weeks);
+        content.innerHTML += renderTable(khoi, schedule);
+      });
+    }
+  </script>
+</body>
+</html>

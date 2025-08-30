@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch trực</title>
+</head>
+<body>
+    <h1>Lịch trực của bạn</h1>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Tuần</th>
+            <th>Lớp trực</th>
+        </tr>
+        {% for assignment in assignments %}
+        <tr>
+            <td>{{ assignment.week }}</td>
+            <td>{{ assignment.assigned_class }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="{{ url_for('logout') }}">Đăng xuất</a>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Xếp hạng tuần {{ tuan }}</title>
+</head>
+<body>
+    <h1>Xếp hạng tuần {{ tuan }}</h1>
+    <table>
+        <tr>
+            <th>Hạng</th>
+            <th>Lớp Trực</th>
+            <th>Điểm học tập</th>
+            <th>Điểm nội quy</th>
+            <th>Tổng điểm</th>
+        </tr>
+        {% for row in bang %}
+        <tr>
+            <td>{{ row.hang }}</td>
+            <td>{{ row.lop_truc }}</td>
+            <td>{{ row.diem_hoc_tap }}</td>
+            <td>{{ row.diem_noi_quy }}</td>
+            <td>{{ row.tong_diem }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

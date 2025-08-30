@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Danh sách phân công</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+        }
+        a {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            text-align: center;
+            padding: 8px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Danh sách phân công</h2>
+    <a href="/index.html">Quay lại trang chính</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Khối</th>
+                <th>Tuần</th>
+                <th>Lớp trực</th>
+                <th>Lớp được trực</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for schedule in schedules %}
+            <tr>
+                <td>{{ schedule.khoi }}</td>
+                <td>{{ schedule.tuan }}</td>
+                <td>{{ schedule.lop }}</td>
+                <td>{{ schedule.lop_truc }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

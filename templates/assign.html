@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Phân công lịch trực</title>
+</head>
+<body>
+    <h1>Phân công lịch trực (Admin)</h1>
+    <form method="POST">
+        Chọn user:
+        <select name="username" required>
+            {% for user in users %}
+            <option value="{{ user.username }}">{{ user.username }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        Tuần: <input type="number" name="week" required><br><br>
+        Lớp trực: <input type="text" name="assigned_class" required><br><br>
+
+        <button type="submit">Phân công</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('logout') }}">Đăng xuất</a>
+</body>
+</html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh Sửa Dữ Liệu Nội Quy - Hệ Thống Quản Lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --background: #f1f5f9;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --border: #d1d5db;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+        }
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -260px;
+            background-color: var(--primary);
+            color: white;
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .sidebar .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .sidebar .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-links a i {
+            margin-right: 0.75rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            animation: slideIn 0.5s ease;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h2 i {
+            margin-right: 0.75rem;
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .button-success {
+            background-color: #28a745;
+        }
+
+        .button-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .button-primary {
+            background-color: var(--primary);
+        }
+
+        .button-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group input[readonly] {
+            background-color: #e2e8f0;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: var(--text);
+        }
+
+        .footer {
+            background-color: #111827;
+            color: white;
+            padding: 3rem 0;
+            margin-top: auto;
+        }
+
+        .footer h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer a {
+            color: var(--accent);
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #d97706;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (min-width: 1024px) {
+            .navbar .menu-toggle {
+                display: none;
+            }
+            .sidebar {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 260px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            h2 {
+                font-size: 1.25rem;
+            }
+            .form-group input, .form-group select {
+                font-size: 0.9rem;
+            }
+            .button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar flex items-center justify-between">
+        <div class="flex items-center">
+            <i class="fas fa-bars menu-toggle text-2xl text-gray-700 mr-4" id="menuToggle"></i>
+            <div class="text-xl font-bold text-gray-800">HỆ THỐNG QUẢN LÝ</div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo"><i class="fas fa-school"></i> HỆ THỐNG QUẢN LÝ</div>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Trang Chủ</a>
+            {% if session.get('role') == 'admin' %}
+            <a href="{{ url_for('index') }}"><i class="fas fa-users-cog"></i> Quản Lý Tài Khoản</a>
+            <a href="{{ url_for('tong_ket') }}"><i class="fas fa-chart-bar"></i> Trang Tổng Kết</a>
+            <a href="{{ url_for('tong_ket_tat_ca') }}"><i class="fas fa-chart-line"></i> Tổng Kết Tất Cả</a>
+            <a href="#" id="adminInfoBtnSidebar"><i class="fas fa-calendar-alt"></i> Đặt Tuần</a>
+            {% endif %}
+            {% if session.get('role') in ['user', 'viewer'] %}
+            <a href="{{ url_for('user') }}"><i class="fas fa-user"></i> Trang của tôi</a>
+            {% endif %}
+            <a href="#" id="profileBtnSidebar"><i class="fas fa-user-circle"></i> Profile</a>
+            <a href="{{ url_for('hoc_tap') }}"><i class="fas fa-book-open"></i> Học Tập</a>
+            <a href="{{ url_for('noi_quy') }}"><i class="fas fa-gavel"></i> Nội Quy</a>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h2><i class="fas fa-gavel"></i> Chỉnh Sửa Dữ Liệu Nội Quy</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="mb-4">
+                {% for category, message in messages %}
+                <p class="text-{{ category }}-600">{{ message | safe }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <form method="POST" action="{{ url_for('update_rules_data_admin', data_id=data.id) }}" class="space-y-4">
+                <div class="form-group">
+                    <label>Tuần:</label>
+                    <input type="text" value="{{ data.tuan or '' }}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Lớp Trực:</label>
+                    <input type="text" value="{{ data.lop_truc or '' }}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Nội dung vi phạm:</label>
+                    <select name="noi_dung_vi_pham" id="noi_dung_vi_pham" required>
+                        <option value="">-- Chọn lỗi vi phạm --</option>
+                        <option value="1.1. Trễ sinh hoạt đầu giờ" {{ 'selected' if data.noi_dung_vi_pham == '1.1. Trễ sinh hoạt đầu giờ' else '' }}>1.1. Trễ sinh hoạt đầu giờ</option>
+                        <option value="1.2. Vắng tiết CP" {{ 'selected' if data.noi_dung_vi_pham == '1.2. Vắng tiết CP' else '' }}>1.2. Vắng tiết CP</option>
+                        <option value="1.3. Vắng học CP" {{ 'selected' if data.noi_dung_vi_pham == '1.3. Vắng học CP' else '' }}>1.3. Vắng học CP</option>
+                        <option value="1.4. Bỏ tiết học không phép" {{ 'selected' if data.noi_dung_vi_pham == '1.4. Bỏ tiết học không phép' else '' }}>1.4. Bỏ tiết học không phép</option>
+                        <option value="1.5. Vắng học KP" {{ 'selected' if data.noi_dung_vi_pham == '1.5. Vắng học KP' else '' }}>1.5. Vắng học KP</option>
+                        <option value="1.6. Vi phạm trang phục" {{ 'selected' if data.noi_dung_vi_pham == '1.6. Vi phạm trang phục' else '' }}>1.6. Vi phạm trang phục</option>
+                        <option value="1.7. Vi phạm đầu tóc" {{ 'selected' if data.noi_dung_vi_pham == '1.7. Vi phạm đầu tóc' else '' }}>1.7. Vi phạm đầu tóc</option>
+                        <option value="1.8. Không có bảng tên" {{ 'selected' if data.noi_dung_vi_pham == '1.8. Không có bảng tên' else '' }}>1.8. Không có bảng tên</option>
+                        <option value="1.9. Đoàn viên không đeo huy hiệu" {{ 'selected' if data.noi_dung_vi_pham == '1.9. Đoàn viên không đeo huy hiệu' else '' }}>1.9. Đoàn viên không đeo huy hiệu</option>
+                        <option value="2.1. Không xếp hàng nghiêm túc" {{ 'selected' if data.noi_dung_vi_pham == '2.1. Không xếp hàng nghiêm túc' else '' }}>2.1. Không xếp hàng nghiêm túc</option>
+                        <option value="2.2. Cả lớp xếp hàng không nghiêm túc" {{ 'selected' if data.noi_dung_vi_pham == '2.2. Cả lớp xếp hàng không nghiêm túc' else '' }}>2.2. Cả lớp xếp hàng không nghiêm túc</option>
+                        <option value="2.3. Cả lớp không xếp hàng" {{ 'selected' if data.noi_dung_vi_pham == '2.3. Cả lớp không xếp hàng' else '' }}>2.3. Cả lớp không xếp hàng</option>
+                        <option value="2.4. SHDC chậm ổn định" {{ 'selected' if data.noi_dung_vi_pham == '2.4. SHDC chậm ổn định' else '' }}>2.4. SHDC chậm ổn định</option>
+                        <option value="2.5. Hát Quốc ca không nghiêm túc" {{ 'selected' if data.noi_dung_vi_pham == '2.5. Hát Quốc ca không nghiêm túc' else '' }}>2.5. Hát Quốc ca không nghiêm túc</option>
+                        <option value="2.6. Ra ngoài 15p đầu giờ không phép" {{ 'selected' if data.noi_dung_vi_pham == '2.6. Ra ngoài 15p đầu giờ không phép' else '' }}>2.6. Ra ngoài 15p đầu giờ không phép</option>
+                        <option value="3.1. Bàn ghế không gọn" {{ 'selected' if data.noi_dung_vi_pham == '3.1. Bàn ghế không gọn' else '' }}>3.1. Bàn ghế không gọn</option>
+                        <option value="3.2. Viết vẽ bậy" {{ 'selected' if data.noi_dung_vi_pham == '3.2. Viết vẽ bậy' else '' }}>3.2. Viết vẽ bậy</option>
+                        <option value="3.3. Không vệ sinh lớp" {{ 'selected' if data.noi_dung_vi_pham == '3.3. Không vệ sinh lớp' else '' }}>3.3. Không vệ sinh lớp</option>
+                        <option value="3.4. Ngồi, đứng, đi trên bàn" {{ 'selected' if data.noi_dung_vi_pham == '3.4. Ngồi, đứng, đi trên bàn' else '' }}>3.4. Ngồi, đứng, đi trên bàn</option>
+                        <option value="3.5. Không tắt cầu dao" {{ 'selected' if data.noi_dung_vi_pham == '3.5. Không tắt cầu dao' else '' }}>3.5. Không tắt cầu dao</option>
+                        <option value="3.6. Lớp trực tuần không sạch" {{ 'selected' if data.noi_dung_vi_pham == '3.6. Lớp trực tuần không sạch' else '' }}>3.6. Lớp trực tuần không sạch</option>
+                        <option value="3.7. Không xếp ghế sau sinh hoạt" {{ 'selected' if data.noi_dung_vi_pham == '3.7. Không xếp ghế sau sinh hoạt' else '' }}>3.7. Không xếp ghế sau sinh hoạt</option>
+                        <option value="3.8. Phá hoại cây xanh, tài sản" {{ 'selected' if data.noi_dung_vi_pham == '3.8. Phá hoại cây xanh, tài sản' else '' }}>3.8. Phá hoại cây xanh, tài sản</option>
+                        <option value="3.9. Lớp bỏ trực tuần" {{ 'selected' if data.noi_dung_vi_pham == '3.9. Lớp bỏ trực tuần' else '' }}>3.9. Lớp bỏ trực tuần</option>
+                        <option value="3.10. Không trang trí buổi lễ" {{ 'selected' if data.noi_dung_vi_pham == '3.10. Không trang trí buổi lễ' else '' }}>3.10. Không trang trí buổi lễ</option>
+                        <option value="4.1. Không ghi thống kê sổ" {{ 'selected' if data.noi_dung_vi_pham == '4.1. Không ghi thống kê sổ' else '' }}>4.1. Không ghi thống kê sổ</option>
+                        <option value="4.2. Gian lận sĩ số" {{ 'selected' if data.noi_dung_vi_pham == '4.2. Gian lận sĩ số' else '' }}>4.2. Gian lận sĩ số</option>
+                        <option value="4.3. Mất sổ theo dõi" {{ 'selected' if data.noi_dung_vi_pham == '4.3. Mất sổ theo dõi' else '' }}>4.3. Mất sổ theo dõi</option>
+                        <option value="5.1. Không ghi tiêu đề bảng" {{ 'selected' if data.noi_dung_vi_pham == '5.1. Không ghi tiêu đề bảng' else '' }}>5.1. Không ghi tiêu đề bảng</option>
+                        <option value="5.2. Không nộp cờ thi đua" {{ 'selected' if data.noi_dung_vi_pham == '5.2. Không nộp cờ thi đua' else '' }}>5.2. Không nộp cờ thi đua</option>
+                        <option value="5.3. Chạy xe trong sân" {{ 'selected' if data.noi_dung_vi_pham == '5.3. Chạy xe trong sân' else '' }}>5.3. Chạy xe trong sân</option>
+                        <option value="5.4. Làm việc riêng trong giờ" {{ 'selected' if data.noi_dung_vi_pham == '5.4. Làm việc riêng trong giờ' else '' }}>5.4. Làm việc riêng trong giờ</option>
+                        <option value="5.5. Nhắc nhở không có biên bản" {{ 'selected' if data.noi_dung_vi_pham == '5.5. Nhắc nhở không có biên bản' else '' }}>5.5. Nhắc nhở không có biên bản</option>
+                        <option value="5.6. Lập biên bản kiểm tra" {{ 'selected' if data.noi_dung_vi_pham == '5.6. Lập biên bản kiểm tra' else '' }}>5.6. Lập biên bản kiểm tra</option>
+                        <option value="5.7. Dùng điện thoại trong giờ" {{ 'selected' if data.noi_dung_vi_pham == '5.7. Dùng điện thoại trong giờ' else '' }}>5.7. Dùng điện thoại trong giờ</option>
+                        <option value="5.8. Nói tục, thô lỗ" {{ 'selected' if data.noi_dung_vi_pham == '5.8. Nói tục, thô lỗ' else '' }}>5.8. Nói tục, thô lỗ</option>
+                        <option value="5.9. Không tổng kết cờ đỏ" {{ 'selected' if data.noi_dung_vi_pham == '5.9. Không tổng kết cờ đỏ' else '' }}>5.9. Không tổng kết cờ đỏ</option>
+                        <option value="5.10. Không khai báo khi bị phát hiện" {{ 'selected' if data.noi_dung_vi_pham == '5.10. Không khai báo khi bị phát hiện' else '' }}>5.10. Không khai báo khi bị phát hiện</option>
+                        <option value="5.11. Mang đồ ăn vào trường" {{ 'selected' if data.noi_dung_vi_pham == '5.11. Mang đồ ăn vào trường' else '' }}>5.11. Mang đồ ăn vào trường</option>
+                        <option value="5.12. Nhận hàng online trong giờ" {{ 'selected' if data.noi_dung_vi_pham == '5.12. Nhận hàng online trong giờ' else '' }}>5.12. Nhận hàng online trong giờ</option>
+                        <option value="5.13. Cản trở lớp khác" {{ 'selected' if data.noi_dung_vi_pham == '5.13. Cản trở lớp khác' else '' }}>5.13. Cản trở lớp khác</option>
+                        <option value="5.14. Gian lận kiểm tra" {{ 'selected' if data.noi_dung_vi_pham == '5.14. Gian lận kiểm tra' else '' }}>5.14. Gian lận kiểm tra</option>
+                        <option value="5.15. Gian lận hồ sơ" {{ 'selected' if data.noi_dung_vi_pham == '5.15. Gian lận hồ sơ' else '' }}>5.15. Gian lận hồ sơ</option>
+                        <option value="5.16. Tổ chức trò chơi ồn" {{ 'selected' if data.noi_dung_vi_pham == '5.16. Tổ chức trò chơi ồn' else '' }}>5.16. Tổ chức trò chơi ồn</option>
+                        <option value="5.17. Xâm phạm thân thể, nhân phẩm" {{ 'selected' if data.noi_dung_vi_pham == '5.17. Xâm phạm thân thể, nhân phẩm' else '' }}>5.17. Xâm phạm thân thể, nhân phẩm</option>
+                        <option value="5.18. Đánh nhau, quay clip" {{ 'selected' if data.noi_dung_vi_pham == '5.18. Đánh nhau, quay clip' else '' }}>5.18. Đánh nhau, quay clip</option>
+                        <option value="6.1. Vi phạm pháp luật" {{ 'selected' if data.noi_dung_vi_pham == '6.1. Vi phạm pháp luật' else '' }}>6.1. Vi phạm pháp luật</option>
+                        <option value="6.2. Vi phạm giao thông" {{ 'selected' if data.noi_dung_vi_pham == '6.2. Vi phạm giao thông' else '' }}>6.2. Vi phạm giao thông</option>
+                        <option value="6.3. Không đội mũ bảo hiểm" {{ 'selected' if data.noi_dung_vi_pham == '6.3. Không đội mũ bảo hiểm' else '' }}>6.3. Không đội mũ bảo hiểm</option>
+                        <option value="6.4. Không tắt máy xe khi vào trường" {{ 'selected' if data.noi_dung_vi_pham == '6.4. Không tắt máy xe khi vào trường' else '' }}>6.4. Không tắt máy xe khi vào trường</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Điểm trừ:</label>
+                    <input type="number" name="diem_tru" id="diem_tru" min="0" value="{{ data.diem_tru or 0 }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Số lượt vi phạm:</label>
+                    <input type="number" name="so_luot_vi_pham" min="0" value="{{ data.so_luot_vi_pham or 0 }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Tên học sinh vi phạm:</label>
+                    <input type="text" name="ten_hoc_sinh_vi_pham" value="{{ data.ten_hoc_sinh_vi_pham or '' }}" placeholder="Nhập tên học sinh (nếu có)">
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="submit" class="button button-success"><i class="fas fa-save"></i> Cập nhật</button>
+                    <a href="{{ url_for('noi_quy') }}" class="button button-primary"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeProfileModal">×</span>
+            <h3><i class="fas fa-user-circle"></i> Thông Tin Cá Nhân</h3>
+            <div class="user-info-modal space-y-4">
+                <p><strong class="text-blue-600">Tên người dùng:</strong> {{ session.get('username', 'N/A') }}</p>
+                <p><strong class="text-blue-600">Vai trò:</strong> {{ session.get('role', 'N/A') }}</p>
+                <p><strong class="text-blue-600">Lớp:</strong> {{ session.get('lop', 'Chưa gán') }}</p>
+                <p><strong class="text-blue-600">Tuần hiện tại:</strong> Tuần {{ session.get('tuan', 'Chưa gán') }}</p>
+                <p><strong class="text-blue-600">Lớp trực:</strong> {{ session.get('lop_truc', 'Chưa gán') }}</p>
+                <div class="flex justify-center">
+                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition">
+                        <i class="fas fa-edit mr-2"></i> Chỉnh sửa Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3>Hệ Thống Quản Lý Thi Đua</h3>
+                    <p class="mt-2 text-sm">Hỗ trợ quản lý học sinh và báo cáo thi đua một cách hiệu quả, minh bạch và chuyên nghiệp tại Trường THPT Cái Nước.</p>
+                </div>
+                <div>
+                    <h3>Liên Kết Nhanh</h3>
+                    <ul class="mt-2 space-y-2">
+                        <li><a href="{{ url_for('home') }}" class="text-amber-400 hover:text-amber-500">Trang Chủ</a></li>
+                        <li><a href="{{ url_for('hoc_tap') }}" class="text-amber-400 hover:text-amber-500">Quản Lý Học Tập</a></li>
+                        <li><a href="{{ url_for('noi_quy') }}" class="text-amber-400 hover:text-amber-500">Quản Lý Nội Quy</a></li>
+                        <li><a href="#intro" class="text-amber-400 hover:text-amber-500">Giới Thiệu Hệ Thống</a></li>
+                    </ul>
+                </div>
+                        <ul class="footer-links">
+                            <li><a href="mailto:support@quanlylop.edu.vn"><i class="fas fa-envelope"></i> support@quanlylop.edu.vn</a></li>
+                            <li><a href="tel:0123456789"><i class="fas fa-phone"></i> 0326781606</a></li>
+                            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Cái Nước, Cà Mau</a></li>
+                        </ul>
+            </div>
+            <div class="mt-8 text-center text-sm">
+                <p>© 2025 Hệ Thống Quản Lý Thi Đua - Trường THPT Cái Nước. Bản quyền thuộc về xAI.</p>
+            </div>
+        </div>
+    </footer>
+
+  <script>
+    function updateDiemTru() {
+        const penalties = {
+            "1.1. Trễ sinh hoạt đầu giờ": -5, "1.2. Vắng tiết CP": -10, "1.3. Vắng học CP": -15,
+            "1.4. Bỏ tiết học không phép": -30, "1.5. Vắng học KP": -50, "1.6. Vi phạm trang phục": -50,
+            "1.7. Vi phạm đầu tóc": -50, "1.8. Không có bảng tên": -5, "1.9. Đoàn viên không đeo huy hiệu": -5,
+            "2.1. Không xếp hàng nghiêm túc": -10, "2.2. Cả lớp xếp hàng không nghiêm túc": -30, 
+            "2.3. Cả lớp không xếp hàng": -50, "2.4. SHDC chậm ổn định": -30, 
+            "2.5. Hát Quốc ca không nghiêm túc": -50, "2.6. Ra ngoài 15p đầu giờ không phép": -10,
+            "3.1. Bàn ghế không gọn": -10, "3.2. Viết vẽ bậy": -30, "3.3. Không vệ sinh lớp": -50,
+            "3.4. Ngồi, đứng, đi trên bàn": -50, "3.5. Không tắt cầu dao": -50, 
+            "3.6. Lớp trực tuần không sạch": -50, "3.7. Không xếp ghế sau sinh hoạt": -50, 
+            "3.8. Phá hoại cây xanh, tài sản": -100, "3.9. Lớp bỏ trực tuần": -100, 
+            "3.10. Không trang trí buổi lễ": -200, "4.1. Không ghi thống kê sổ": -10, 
+            "4.2. Gian lận sĩ số": -200, "4.3. Mất sổ theo dõi": -100, 
+            "5.1. Không ghi tiêu đề bảng": -20, "5.2. Không nộp cờ thi đua": -30,
+            "5.3. Chạy xe trong sân": -30, "5.4. Làm việc riêng trong giờ": -30, 
+            "5.5. Nhắc nhở không có biên bản": -50, "5.6. Lập biên bản kiểm tra": -100, 
+            "5.7. Dùng điện thoại trong giờ": -100, "5.8. Nói tục, thô lỗ": -100,
+            "5.9. Không tổng kết cờ đỏ": -100, "5.10. Không khai báo khi bị phát hiện": -100, 
+            "5.11. Mang đồ ăn vào trường": -100, "5.12. Nhận hàng online trong giờ": -100, 
+            "5.13. Cản trở lớp khác": -100, "5.14. Gian lận kiểm tra": -200,
+            "5.15. Gian lận hồ sơ": -200, "5.16. Tổ chức trò chơi ồn": -200, 
+            "5.17. Xâm phạm thân thể, nhân phẩm": -200, "5.18. Đánh nhau, quay clip": -300,
+            "6.1. Vi phạm pháp luật": -200, "6.2. Vi phạm giao thông": -100,
+            "6.3. Không đội mũ bảo hiểm": -100, "6.4. Không tắt máy xe khi vào trường": -100
+        };
+        const selected = document.getElementById("vi_pham").value;
+        document.getElementById("diem_tru").value = penalties[selected] || 0;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDiemTru();
+    });
+</script>
+
+        document.getElementById('noi_dung_vi_pham').addEventListener('change', function() {
+            const selectedViolation = this.value;
+            const diemTruInput = document.getElementById('diem_tru');
+            diemTruInput.value = violationPoints[selectedViolation] || 0;
+        });
+    </script>
+</body>
+</html>
